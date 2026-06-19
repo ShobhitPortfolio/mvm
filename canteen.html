@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>MVM Hyderabad — Canteen</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, get, push, update, onValue, remove, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCdP9iGOkaDhZVFOQsY1zlloIizJmrxaMk",
+  authDomain: "mvmdatabaseandwebsite.firebaseapp.com",
+  databaseURL: "https://mvmdatabaseandwebsite-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "mvmdatabaseandwebsite",
+  storageBucket: "mvmdatabaseandwebsite.firebasestorage.app",
+  messagingSenderId: "99424536261",
+  appId: "1:99424536261:web:f596411a3aa7d5304892ac"
+};
+
+// ════════════════════════════════════════
+//  LIVE LISTENERS — replaces the old one-time get() fetch.
+//  Every admin / student tab now stays in sync automatically,
+//  and items are keyed by Firebase's own push IDs (never plain
+//  numbers), which is what actually caused the "undefined" bug.
+// ════════════════════════════════════════
+let menuReady = false, ordersReady = false, studentsReady = false;
+function maybeHideLoader() {
+  if (menuReady && ordersReady && studentsReady) window.dispatchEvent(new CustomEvent('fbFirstLoad'));
+}
+
+try {
+  const app = initializeApp(firebaseConfig);
+  const db  = getDatabase(app);
+  window._db = db; window._ref = ref; window._set = set; window._get = get;
+  window._push = push; window._update = update; window._remove = remove;
+  window._runTransaction = runTransaction;
+  window._firebaseReady = true;
+  console.log("Firebase connected ✓ (live sync mode)");
+
+  onValue(ref(db, 'students'), snap => {
+    window._fbStudents = snap.exists() ? snap.val() : {};
+    studentsReady = true;
+    window.dispatchEvent(new CustomEvent('studentsUpdated'));
+    maybeHideLoader();
+  }, err => console.error('students listener error:', err));
+
+  onValue(ref(db, 'canteenMenu'), snap => {
+    window._fbMenu = snap.exists() ? snap.val() : null;
+    menuReady = true;
+    window.dispatchEvent(new CustomEvent('menuUpdated'));
+    maybeHideLoader();
+  }, err => console.error('menu listener error:', err));
+
+  onValue(ref(db, 'canteenOrders'), snap => {
+    window._fbOrders = snap.exists() ? snap.val() : {};
+    ordersReady = true;
+    window.dispatchEvent(new CustomEvent('ordersUpdated'));
+    maybeHideLoader();
+  }, err => console.error('orders listener error:', err));
+
+} catch(e) {
+  console.warn("Firebase init failed:", e);
+  window._firebaseReady = false;
+  window._fbStudents = {}; window._fbMenu = null; window._fbOrders = {};
+  window.dispatchEvent(new CustomEvent('fbFirstLoad'));
+}
+</script>
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{height:100%;scroll-behavior:smooth}
+:root{
+  --void:#000;--ink:#070708;--carbon:#0d0d10;--graphite:#121214;--ash:#1a1a1e;
+  --white:#fff;--ivory:#f0ede6;--silver:#9898a4;--dim:#4a4a56;
+  --gold:#d4a843;--gold2:#f0c55a;--gold-dim:rgba(212,168,67,.1);--gold-ln:rgba(212,168,67,.25);
+  --ok:#22c55e;--ok-dim:rgba(34,197,94,.09);--ok-ln:rgba(34,197,94,.25);
+  --warn:#f59e0b;--warn-dim:rgba(245,158,11,.09);--warn-ln:rgba(245,158,11,.25);
+  --bad:#ef4444;--bad-dim:rgba(239,68,68,.09);--bad-ln:rgba(239,68,68,.25);
+  --info:#60a5fa;--info-dim:rgba(96,165,250,.09);--info-ln:rgba(96,165,250,.25);
+  --rule:rgba(255,255,255,.07);--rule2:rgba(255,255,255,.14);
+  --f:'Sora',sans-serif;--fm:'JetBrains Mono',monospace;--r:25px;
+}
+body{font-family:var(--f);background:var(--void);color:var(--white);min-height:100%;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::after{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.025'/%3E%3C/svg%3E");pointer-events:none;z-index:9998}
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fadeScale{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes popIn{0%{opacity:0;transform:scale(.7) translateY(8px)}60%{transform:scale(1.03)}100%{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── LOADING SCREEN ── */
+#loadScreen{position:fixed;inset:0;background:var(--void);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px}
+.ls-mark{width:56px;height:56px;border:1px solid var(--gold-ln);border-radius:18px;display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:14px;font-weight:700;color:var(--gold)}
+.ls-spin{width:28px;height:28px;border:2px solid rgba(212,168,67,.2);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+.ls-txt{font-family:var(--fm);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--dim)}
+#loadScreen.gone{opacity:0;pointer-events:none;transition:opacity .3s}
+
+/* ── TOPBAR ── */
+.topbar{height:60px;background:var(--ink);border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:100}
+.tb-L{display:flex;align-items:center;gap:14px}
+.tb-mark{width:36px;height:36px;border:1px solid var(--gold-ln);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:10px;font-weight:600;color:var(--gold);border-radius:12px}
+.tb-school{font-size:13px;font-weight:600}
+.tb-school small{display:block;font-family:var(--fm);font-size:7px;letter-spacing:3px;text-transform:uppercase;color:var(--dim);margin-top:1px}
+.tb-R{display:flex;align-items:center;gap:8px}
+.tb-tabs{display:flex;background:var(--carbon);border:1px solid var(--rule);border-radius:var(--r);padding:3px;gap:2px}
+.tb-tab{padding:7px 16px;font-family:var(--fm);font-size:9px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;border-radius:18px;cursor:pointer;color:var(--dim);transition:all .2s;border:none;background:none}
+.tb-tab.on{background:var(--gold);color:var(--void)}
+.tb-tab:hover:not(.on){color:var(--silver)}
+.tb-pill{padding:4px 12px;font-family:var(--fm);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;border:1px solid var(--rule);color:var(--silver);border-radius:var(--r);cursor:pointer;transition:all .2s}
+.tb-pill.gold{border-color:var(--gold-ln);color:var(--gold);background:var(--gold-dim)}
+.tb-pill.gold.on{background:var(--gold);color:var(--void)}
+
+/* ── LAYOUT ── */
+.main{padding:28px;max-width:1280px;margin:0 auto}
+.phd{margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--rule);animation:up .35s ease}
+.p-eye{font-family:var(--fm);font-size:7px;letter-spacing:4px;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.p-title{font-size:24px;font-weight:700;letter-spacing:-.3px}
+.p-title span{color:var(--gold)}
+.p-sub{font-size:12px;color:var(--silver);margin-top:3px}
+
+/* ── CHIPS ── */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:22px}
+.chip{padding:7px 16px;border:1px solid var(--rule);background:var(--graphite);color:var(--dim);font-family:var(--fm);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .18s;user-select:none;border-radius:var(--r)}
+.chip:hover{border-color:var(--rule2);color:var(--silver);transform:translateY(-1px)}
+.chip.on{border-color:var(--gold-ln);background:var(--gold-dim);color:var(--gold)}
+
+/* ── MENU CARDS ── */
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.menu-card{background:var(--carbon);border:1px solid var(--rule);border-radius:var(--r);overflow:hidden;transition:all .25s cubic-bezier(.22,1,.36,1);opacity:0;animation:slideUp .4s ease forwards}
+.menu-card:hover{border-color:var(--gold-ln);transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.menu-card.unavail{opacity:.4!important;pointer-events:none;filter:grayscale(.5)}
+.menu-img{height:108px;display:flex;align-items:center;justify-content:center;font-size:48px;background:linear-gradient(135deg,var(--graphite),var(--ash));border-bottom:1px solid var(--rule);position:relative;transition:transform .3s}
+.menu-card:hover .menu-img{transform:scale(1.04)}
+.cat-tag{position:absolute;top:10px;left:10px;font-family:var(--fm);font-size:7px;font-weight:600;letter-spacing:1.5px;padding:3px 9px;border-radius:var(--r);background:rgba(0,0,0,.6);border:1px solid var(--rule);color:var(--silver);backdrop-filter:blur(4px)}
+.menu-body{padding:14px 16px 16px}
+.menu-name{font-size:14px;font-weight:600;margin-bottom:3px}
+.menu-desc{font-family:var(--fm);font-size:9px;color:var(--dim);margin-bottom:11px;line-height:1.6}
+.menu-foot{display:flex;align-items:center;justify-content:space-between}
+.menu-price{font-family:var(--fm);font-size:16px;font-weight:600;color:var(--gold2)}
+.stock-tag{font-family:var(--fm);font-size:7px;letter-spacing:1px;padding:2px 8px;border-radius:var(--r);text-transform:uppercase}
+.stock-ok{background:var(--ok-dim);border:1px solid var(--ok-ln);color:var(--ok)}
+.stock-low{background:var(--warn-dim);border:1px solid var(--warn-ln);color:var(--warn)}
+.stock-out{background:var(--bad-dim);border:1px solid var(--bad-ln);color:var(--bad)}
+.book-btn{width:100%;padding:10px;background:var(--gold);color:var(--void);border:none;border-radius:var(--r);font-family:var(--fm);font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;margin-top:12px;transition:all .18s}
+.book-btn:hover{background:var(--gold2);transform:translateY(-1px)}
+.sold-tag{width:100%;padding:10px;background:var(--bad-dim);border:1px solid var(--bad-ln);color:var(--bad);border-radius:var(--r);font-family:var(--fm);font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;text-align:center;margin-top:12px}
+
+/* ── MODALS ── */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);z-index:500;display:none;align-items:center;justify-content:center;padding:16px}
+.ov.on{display:flex;animation:fadeScale .25s ease}
+.mbox{background:var(--carbon);border:1px solid var(--rule);border-top:2px solid var(--gold);width:100%;max-width:480px;max-height:90vh;overflow-y:auto;border-radius:var(--r);animation:popIn .35s cubic-bezier(.22,1.4,.4,1)}
+.mhd{padding:18px 22px;border-bottom:1px solid var(--rule);display:flex;align-items:flex-start;justify-content:space-between}
+.mhd-t{font-size:15px;font-weight:600}
+.mhd-s{font-family:var(--fm);font-size:9px;color:var(--dim);margin-top:3px}
+.mc{padding:5px 11px;border:1px solid var(--rule);background:transparent;color:var(--dim);cursor:pointer;font-size:14px;transition:all .15s;border-radius:var(--r)}
+.mc:hover{color:var(--bad);border-color:var(--bad-ln)}
+.mbody{padding:18px 22px 22px}
+.mact{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+.modal-item-preview{display:flex;align-items:center;gap:14px;background:var(--graphite);border:1px solid var(--rule);border-radius:var(--r);padding:14px 16px;margin-bottom:18px}
+.modal-item-emoji{font-size:30px}
+.modal-item-name{font-size:14px;font-weight:600}
+.modal-item-price{font-family:var(--fm);font-size:12px;color:var(--gold2);margin-top:2px}
+
+/* ── FORMS ── */
+.fg{margin-bottom:13px}
+.fg label{display:block;font-family:var(--fm);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:5px}
+.fg input,.fg select{width:100%;background:var(--graphite);border:1px solid var(--rule);border-bottom-color:var(--rule2);padding:10px 12px;color:var(--white);font-family:var(--f);font-size:13px;font-weight:300;outline:none;transition:border-color .2s;-webkit-appearance:none;border-radius:var(--r)}
+.fg input::placeholder{color:var(--dim);font-size:11px}
+.fg input:focus,.fg select:focus{border-color:var(--gold);background:var(--ash)}
+.fg select option{background:var(--graphite)}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.lerr{font-family:var(--fm);font-size:10px;color:var(--bad);margin-bottom:10px;padding:9px 14px;background:var(--bad-dim);border:1px solid var(--bad-ln);display:none;letter-spacing:.5px;border-radius:var(--r)}
+.lerr.on{display:block;animation:up .2s ease}
+
+/* ── BUTTONS ── */
+.btn{padding:9px 18px;font-family:var(--fm);font-size:9px;font-weight:500;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .15s;border:none;display:inline-flex;align-items:center;gap:5px;border-radius:var(--r)}
+.btn-p{background:var(--gold);color:var(--void)}.btn-p:hover{background:var(--gold2);transform:translateY(-1px)}
+.btn-g{background:transparent;border:1px solid var(--rule);color:var(--silver)}.btn-g:hover{border-color:var(--rule2);color:var(--white)}
+.btn-bad{background:var(--bad-dim);border:1px solid var(--bad-ln);color:var(--bad)}
+.btn-ok{background:var(--ok-dim);border:1px solid var(--ok-ln);color:var(--ok)}
+.btn-sm{padding:5px 12px;font-size:8px}
+
+/* ── SUCCESS MODAL ── */
+.order-confirm{text-align:center;padding:6px 0}
+.confirm-icon{font-size:52px;display:block;margin-bottom:6px;animation:popIn .5s cubic-bezier(.22,1.6,.4,1)}
+.order-number{font-family:var(--fm);font-size:34px;font-weight:600;color:var(--gold2);letter-spacing:6px;margin:10px 0}
+.order-tag{font-family:var(--fm);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--dim)}
+.order-detail-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--rule);font-size:12.5px}
+.order-detail-row:last-child{border-bottom:none}
+.order-detail-label{font-family:var(--fm);font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--dim)}
+.order-detail-val{color:var(--ivory);font-weight:500}
+
+/* ── MY ORDERS ── */
+.orders-list{display:flex;flex-direction:column;gap:9px}
+.order-row{display:flex;align-items:center;gap:14px;border:1px solid var(--rule);background:var(--carbon);padding:13px 16px;border-radius:var(--r);transition:all .2s;opacity:0;animation:slideUp .35s ease forwards}
+.order-row:hover{border-color:var(--gold-ln);background:var(--graphite)}
+.order-emoji{font-size:26px;flex-shrink:0}
+.order-info{flex:1;min-width:0}
+.order-item-name{font-size:13px;font-weight:500}
+.order-meta{font-family:var(--fm);font-size:9px;color:var(--dim);margin-top:3px}
+.order-num{font-family:var(--fm);font-size:19px;font-weight:600;color:var(--gold2)}
+.order-num-label{font-family:var(--fm);font-size:7px;letter-spacing:1.5px;color:var(--dim);text-align:right;text-transform:uppercase}
+
+/* ── ADMIN ── */
+.login-wrap{min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center;padding:24px}
+.login-card{background:var(--carbon);border:1px solid var(--rule);border-top:2px solid var(--gold);border-radius:var(--r);padding:30px 28px;width:100%;max-width:400px;text-align:center;animation:popIn .4s cubic-bezier(.22,1.2,.4,1)}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:22px}
+.sc{background:var(--carbon);padding:18px 16px;border:1px solid var(--rule);border-radius:var(--r);opacity:0;animation:up .4s ease forwards;transition:all .2s}
+.sc:hover{background:var(--graphite);transform:translateY(-2px)}
+.sc.ok{border-left:3px solid var(--ok)}.sc.warn{border-left:3px solid var(--warn)}.sc.bad{border-left:3px solid var(--bad)}.sc.gold{border-left:3px solid var(--gold)}.sc.info{border-left:3px solid var(--info)}
+.sc-e{font-family:var(--fm);font-size:7px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:7px}
+.sc-v{font-family:var(--fm);font-size:22px;font-weight:600;margin-bottom:3px}
+.sc-l{font-size:11px;color:var(--silver)}
+.admin-tabs{display:flex;gap:6px;margin-bottom:20px;border-bottom:1px solid var(--rule)}
+.admin-tab{padding:9px 18px;font-family:var(--fm);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;color:var(--dim);transition:all .2s;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none}
+.admin-tab.on{color:var(--gold);border-bottom-color:var(--gold)}
+.twrap{border:1px solid var(--rule);margin-bottom:18px;overflow:hidden;border-radius:var(--r);animation:up .35s ease}
+table{width:100%;border-collapse:collapse;background:var(--ink)}
+th{font-family:var(--fm);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);padding:9px 16px;text-align:left;border-bottom:1px solid var(--rule);font-weight:400;white-space:nowrap;background:var(--carbon)}
+td{padding:10px 16px;font-size:12.5px;border-bottom:1px solid rgba(255,255,255,.03);color:rgba(255,255,255,.72);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.025)}
+.bd{display:inline-flex;align-items:center;padding:2px 9px;font-family:var(--fm);font-size:8px;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;border-radius:var(--r)}
+.bk{background:var(--ok-dim);border:1px solid var(--ok-ln);color:var(--ok)}
+.bw{background:var(--warn-dim);border:1px solid var(--warn-ln);color:var(--warn)}
+.bx{background:rgba(255,255,255,.05);border:1px solid var(--rule);color:var(--dim)}
+.big-order-num{font-family:var(--fm);font-size:16px;font-weight:600;color:var(--gold2);letter-spacing:1px}
+.srch{position:relative;flex:1;min-width:180px}
+.srch input{width:100%;background:var(--graphite);border:1px solid var(--rule);padding:9px 12px 9px 36px;color:var(--white);font-family:var(--fm);font-size:11px;outline:none;transition:border-color .2s;letter-spacing:.5px;border-radius:var(--r)}
+.srch input:focus{border-color:var(--gold)}
+.srch-ic{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:12px;pointer-events:none}
+.statSel{background:var(--graphite);border:1px solid var(--rule);padding:8px 10px;color:var(--silver);font-family:var(--fm);font-size:10px;outline:none;border-radius:var(--r);cursor:pointer}
+.filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.manage-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.manage-card{background:var(--carbon);border:1px solid var(--rule);border-radius:var(--r);padding:16px;transition:all .2s;opacity:0;animation:slideUp .35s ease forwards}
+.manage-card:hover{border-color:var(--gold-ln)}
+.manage-top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.manage-emoji{font-size:30px}
+.manage-name{font-size:13.5px;font-weight:600}
+.manage-cat{font-family:var(--fm);font-size:8px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+.manage-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.manage-price{font-family:var(--fm);font-size:15px;font-weight:600;color:var(--gold2)}
+.stock-edit{display:flex;align-items:center;gap:6px}
+.stock-adj{width:22px;height:22px;border-radius:8px;border:1px solid var(--rule);background:var(--graphite);color:var(--silver);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.stock-adj:hover{border-color:var(--gold-ln);color:var(--gold)}
+.manage-desc{font-family:var(--fm);font-size:9px;color:var(--dim);margin-bottom:13px;line-height:1.6}
+.manage-actions{display:flex;gap:6px}
+.avail-toggle{padding:5px 11px;border-radius:var(--r);font-family:var(--fm);font-size:8px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border:1px solid;transition:all .15s}
+.avail-toggle.on{background:var(--ok-dim);color:var(--ok);border-color:var(--ok-ln)}
+.avail-toggle.off{background:var(--bad-dim);color:var(--bad);border-color:var(--bad-ln)}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(12px);padding:11px 22px;font-family:var(--fm);font-size:10px;opacity:0;pointer-events:none;transition:all .3s;z-index:9997;white-space:nowrap;max-width:88vw;letter-spacing:.5px;border-radius:var(--r)}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.s{background:var(--ok-dim);border:1px solid var(--ok-ln);color:var(--ok)}
+.toast.e{background:var(--bad-dim);border:1px solid var(--bad-ln);color:var(--bad)}
+.toast.i{background:var(--carbon);border:1px solid var(--rule);color:var(--silver)}
+.empty{text-align:center;padding:60px 20px;color:var(--dim)}
+.empty-icon{font-size:42px;margin-bottom:12px;opacity:.6}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--ash);border-radius:3px}
+@media(max-width:768px){
+  .topbar{padding:0 14px;height:auto;flex-wrap:wrap;padding-top:10px;padding-bottom:10px;gap:8px}
+  .tb-school small{display:none}
+  .main{padding:16px 14px}
+  .sgrid{grid-template-columns:1fr 1fr}
+  .r2,.r3{grid-template-columns:1fr}
+  .mbox{max-height:96vh}
+  .mhd,.mbody{padding-left:16px;padding-right:16px}
+  table{font-size:11.5px}th,td{padding:8px 10px}
+  .menu-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING SCREEN — shown until Firebase data arrives, then hidden -->
+<div id="loadScreen">
+  <div class="ls-mark">MVM</div>
+  <div class="ls-spin"></div>
+  <div class="ls-txt">Loading canteen…</div>
+</div>
+
+<header class="topbar">
+  <div class="tb-L">
+    <div class="tb-mark">MVM</div>
+    <div class="tb-school">Canteen Portal<small>MVM Hyderabad · Live Menu</small></div>
+  </div>
+  <div class="tb-R">
+    <div class="tb-tabs">
+      <button class="tb-tab on" onclick="switchView('menu')">Menu</button>
+      <button class="tb-tab" onclick="switchView('myorders')">My Orders</button>
+    </div>
+    <div class="tb-pill gold" id="adminPill" onclick="switchView('admin')">🔐 Manager</div>
+  </div>
+</header>
+
+<div id="mainContent"></div>
+
+<!-- BOOK ORDER MODAL -->
+<div class="ov" id="bookModal">
+  <div class="mbox">
+    <div class="mhd">
+      <div><div class="mhd-t">Place Order</div><div class="mhd-s">Fill in your details</div></div>
+      <button class="mc" onclick="closeModal('bookModal')">✕</button>
+    </div>
+    <div class="mbody">
+      <div class="lerr" id="bookErr"></div>
+      <div class="modal-item-preview" id="modalItemPreview"></div>
+      <div class="r2">
+        <div class="fg"><label>Student Name</label><input id="fName" placeholder="e.g. Arjun Sharma"></div>
+        <div class="fg"><label>Class</label>
+          <select id="fClass">
+            <option value="">Select</option>
+            <option>Pre-Nursery</option><option>Nursery</option><option>LKG</option><option>UKG</option>
+            <option>I-A</option><option>I-B</option><option>II-A</option><option>II-B</option>
+            <option>III-A</option><option>III-B</option><option>IV-A</option><option>IV-B</option>
+            <option>V-A</option><option>V-B</option><option>VI-A</option><option>VI-B</option>
+            <option>VII-A</option><option>VII-B</option><option>VIII-A</option><option>VIII-B</option>
+            <option>IX-A</option><option>IX-B</option><option>X-A</option><option>X-B</option>
+            <option>XI-A</option><option>XI-B</option><option>XII-A</option><option>XII-B</option>
+          </select>
+        </div>
+      </div>
+      <div class="r2">
+        <div class="fg"><label>Dashboard ID</label><input id="fDashId" placeholder="e.g. STU001" style="text-transform:uppercase"></div>
+        <div class="fg"><label>Roll Number</label><input id="fRoll" placeholder="e.g. STU-001"></div>
+      </div>
+      <div class="fg"><label>Quantity</label>
+        <select id="fQty"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+      </div>
+      <div class="mact">
+        <button class="btn btn-g" onclick="closeModal('bookModal')">Cancel</button>
+        <button class="btn btn-p" onclick="confirmOrder()">Confirm Order</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="ov" id="successModal">
+  <div class="mbox" style="max-width:420px">
+    <div class="mbody" style="padding-top:26px">
+      <div class="order-confirm">
+        <span class="confirm-icon">✅</span>
+        <div style="font-size:12px;color:var(--silver);margin-bottom:6px">Order placed successfully</div>
+        <div class="order-tag">Your Order Number</div>
+        <div class="order-number" id="sucOrdNum">#0000</div>
+        <div style="font-family:var(--fm);font-size:9px;color:var(--dim);margin-bottom:18px">Show this number at the canteen counter</div>
+        <div style="background:var(--graphite);border-radius:var(--r);padding:6px 16px;text-align:left;margin-bottom:18px" id="sucDetails"></div>
+        <button class="btn btn-p" style="width:100%;justify-content:center" onclick="closeSuccess()">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD/EDIT ITEM MODAL -->
+<div class="ov" id="itemModal">
+  <div class="mbox">
+    <div class="mhd">
+      <div><div class="mhd-t" id="itemModalTitle">Add Menu Item</div><div class="mhd-s">Fill in all item details</div></div>
+      <button class="mc" onclick="closeModal('itemModal')">✕</button>
+    </div>
+    <div class="mbody">
+      <input type="hidden" id="editKey">
+      <div class="r2">
+        <div class="fg"><label>Item Name</label><input id="imName" placeholder="e.g. Samosa"></div>
+        <div class="fg"><label>Emoji</label><input id="imEmoji" placeholder="e.g. 🥟" maxlength="4"></div>
+      </div>
+      <div class="fg"><label>Description</label><input id="imDesc" placeholder="Short description"></div>
+      <div class="r2">
+        <div class="fg"><label>Price (₹)</label><input id="imPrice" type="number" min="1" placeholder="25"></div>
+        <div class="fg"><label>Category</label>
+          <select id="imCat"><option>Snacks</option><option>Meals</option><option>Beverages</option><option>Sweets</option><option>Bakery</option><option>Fruits</option></select>
+        </div>
+      </div>
+      <div class="r2">
+        <div class="fg"><label>Stock</label><input id="imStock" type="number" min="0" placeholder="50"></div>
+        <div class="fg"><label>Availability</label>
+          <select id="imAvail"><option value="true">Available</option><option value="false">Unavailable</option></select>
+        </div>
+      </div>
+      <div class="mact">
+        <button class="btn btn-g" onclick="closeModal('itemModal')">Cancel</button>
+        <button class="btn btn-p" onclick="saveItem()">Save Item</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════
+//  STATE
+//  MENU/ORDERS items now carry a `.key` — the actual Firebase
+//  push ID under canteenMenu / canteenOrders. Nothing is ever
+//  stored under a plain incrementing number again, which is
+//  what caused items to flip to "undefined" before.
+// ════════════════════════════════════════
+let MENU     = [];
+let STUDENTS = {};
+let ORDERS   = {};
+
+const SESSION_KEY = (() => {
+  let k = sessionStorage.getItem('_canteen_session');
+  if (!k) { k = 'S' + Date.now() + Math.random().toString(36).slice(2,6); sessionStorage.setItem('_canteen_session', k); }
+  return k;
+})();
+
+let activeItemKey = null;
+let currentView   = 'menu';
+let currentCat    = 'All';
+let adminLoggedIn = false;
+let adminTab      = 'orders';
+let orderInFlight = false;
+
+// ════════════════════════════════════════
+//  FIREBASE SYNC — fires every time data changes, not just once
+// ════════════════════════════════════════
+window.addEventListener('studentsUpdated', () => {
+  STUDENTS = window._fbStudents || {};
+  Object.values(STUDENTS).forEach(s => { s.canteenBalance = Number(s.canteenBalance) || 0; });
+  if (currentView === 'admin' && adminTab === 'balances') renderAdminTab();
+});
+
+window.addEventListener('menuUpdated', () => {
+  const raw = window._fbMenu;
+  MENU = raw
+    ? Object.entries(raw)
+        .filter(([,v]) => v)
+        .map(([key,v]) => ({ ...v, key, price: Number(v.price)||0, stock: Number(v.stock)||0 }))
+    : [];
+  if (currentView === 'menu') renderMenu();
+  if (currentView === 'admin' && adminTab === 'menu') renderAdminTab();
+});
+
+window.addEventListener('ordersUpdated', () => {
+  const raw = window._fbOrders;
+  const next = {};
+  if (raw) Object.entries(raw).forEach(([key,v]) => { if (v) next[key] = { ...v, key }; });
+  ORDERS = next;
+  if (currentView === 'myorders') renderMyOrders();
+  if (currentView === 'admin' && adminTab === 'orders') renderAdminTab();
+});
+
+window.addEventListener('fbFirstLoad', () => {
+  document.getElementById('loadScreen').classList.add('gone');
+  renderCurrentView();
+});
+
+function renderCurrentView() {
+  if      (currentView === 'menu')     renderMenu();
+  else if (currentView === 'myorders') renderMyOrders();
+  else if (currentView === 'admin')    renderAdmin();
+}
+
+// ════════════════════════════════════════
+//  NAV
+// ════════════════════════════════════════
+function switchView(v) {
+  currentView = v;
+  document.querySelectorAll('.tb-tab').forEach(t => t.classList.remove('on'));
+  document.getElementById('adminPill').classList.remove('on');
+  if      (v === 'menu')     { document.querySelectorAll('.tb-tab')[0].classList.add('on'); renderMenu(); }
+  else if (v === 'myorders') { document.querySelectorAll('.tb-tab')[1].classList.add('on'); renderMyOrders(); }
+  else if (v === 'admin')    { document.getElementById('adminPill').classList.add('on');    renderAdmin(); }
+}
+
+// ════════════════════════════════════════
+//  MENU (student view)
+// ════════════════════════════════════════
+function renderMenu() {
+  if (MENU.length === 0) {
+    document.getElementById('mainContent').innerHTML = `
+      <div class="main">
+        <div class="phd">
+          <div class="p-eye">School Canteen</div>
+          <div class="p-title">Today's <span>Menu</span></div>
+          <div class="p-sub">Fresh items prepared daily — order here, pick up at the counter</div>
+        </div>
+        <div class="empty">
+          <div class="empty-icon">🍽️</div>
+          <div style="font-family:var(--fm);font-size:12px;color:var(--silver);margin-bottom:6px">Menu not set up yet</div>
+          <div style="font-family:var(--fm);font-size:10px;color:var(--dim);letter-spacing:1px">Ask the canteen manager to add items</div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const cats = ['All', ...new Set(MENU.map(m => m.cat).filter(Boolean))];
+  const filtered = currentCat === 'All' ? MENU : MENU.filter(m => m.cat === currentCat);
+  document.getElementById('mainContent').innerHTML = `
+    <div class="main">
+      <div class="phd">
+        <div class="p-eye">School Canteen</div>
+        <div class="p-title">Today's <span>Menu</span></div>
+        <div class="p-sub">Fresh items prepared daily — order here, pick up at the counter</div>
+      </div>
+      <div class="chips">${cats.map(c => `<div class="chip ${currentCat===c?'on':''}" onclick="setCat('${c}')">${c}</div>`).join('')}</div>
+      <div class="menu-grid">
+        ${filtered.length === 0
+          ? `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--dim);font-family:var(--fm);font-size:11px">No items in this category</div>`
+          : filtered.map((item, i) => {
+              const stockClass = item.stock===0 ? 'stock-out' : item.stock<=8 ? 'stock-low' : 'stock-ok';
+              const stockLabel = item.stock===0 ? 'Sold Out' : item.stock<=8 ? `${item.stock} left` : `${item.stock} avail.`;
+              return `<div class="menu-card ${(!item.avail||item.stock===0)?'unavail':''}" style="animation-delay:${i*.04}s">
+                <div class="menu-img"><div class="cat-tag">${item.cat||'—'}</div>${item.emoji||'🍽️'}</div>
+                <div class="menu-body">
+                  <div class="menu-name">${item.name||'Untitled item'}</div>
+                  <div class="menu-desc">${item.desc||''}</div>
+                  <div class="menu-foot">
+                    <div class="menu-price">₹${item.price}</div>
+                    <span class="stock-tag ${stockClass}">${stockLabel}</span>
+                  </div>
+                  ${(item.avail && item.stock>0)
+                    ? `<button class="book-btn" onclick="openBooking('${item.key}')">Book This Item</button>`
+                    : `<div class="sold-tag">Not Available</div>`}
+                </div>
+              </div>`;
+            }).join('')}
+      </div>
+    </div>`;
+}
+
+function setCat(c) { currentCat = c; renderMenu(); }
+
+// ════════════════════════════════════════
+//  BOOKING
+// ════════════════════════════════════════
+function openBooking(key) {
+  activeItemKey = key;
+  const item = MENU.find(m => m.key === key);
+  if (!item) return;
+  document.getElementById('bookErr').className = 'lerr';
+  document.getElementById('modalItemPreview').innerHTML = `
+    <div class="modal-item-emoji">${item.emoji||'🍽️'}</div>
+    <div><div class="modal-item-name">${item.name}</div><div class="modal-item-price">₹${item.price} per item</div></div>`;
+  ['fName','fDashId','fRoll'].forEach(i => document.getElementById(i).value = '');
+  document.getElementById('fClass').value = '';
+  document.getElementById('fQty').value   = '1';
+  document.getElementById('bookModal').classList.add('on');
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('on'); }
+
+// Find student by Dashboard ID (matches Firebase key like STU001)
+function findStudent(dashId) {
+  const key = dashId.trim().toUpperCase();
+  if (STUDENTS[key]) return { key, data: STUDENTS[key] };
+  for (const [k, v] of Object.entries(STUDENTS)) {
+    if ((v.roll||'').toUpperCase().replace(/[^A-Z0-9]/g,'') === key.replace(/[^A-Z0-9]/g,''))
+      return { key: k, data: v };
+  }
+  return null;
+}
+
+// ════════════════════════════════════════
+//  CONFIRM ORDER — stock, balance, and the order number are each
+//  written with a Firebase transaction, so two students ordering
+//  the same item at the same instant can never corrupt each
+//  other's data or land on the same order number.
+// ════════════════════════════════════════
+async function confirmOrder() {
+  if (orderInFlight) return;
+  const name   = document.getElementById('fName').value.trim();
+  const cls    = document.getElementById('fClass').value;
+  const dashId = document.getElementById('fDashId').value.trim().toUpperCase();
+  const roll   = document.getElementById('fRoll').value.trim();
+  const qty    = parseInt(document.getElementById('fQty').value);
+  const errBox = document.getElementById('bookErr');
+
+  if (!name || !cls || !dashId || !roll) {
+    errBox.textContent = 'Please fill in all fields.'; errBox.className = 'lerr on'; return;
+  }
+
+  const item = MENU.find(m => m.key === activeItemKey);
+  if (!item) { errBox.textContent = 'Item no longer available.'; errBox.className = 'lerr on'; return; }
+  if (qty > item.stock) {
+    errBox.textContent = `Only ${item.stock} in stock.`; errBox.className = 'lerr on'; return;
+  }
+
+  const total = item.price * qty;
+  const match = findStudent(dashId);
+
+  if (match && (Number(match.data.canteenBalance)||0) < total) {
+    errBox.textContent = `No balance — ₹${Number(match.data.canteenBalance)||0} available, ₹${total} needed.`;
+    errBox.className = 'lerr on'; return;
+  }
+
+  if (!window._firebaseReady) { showToast('Offline — cannot place order', 'e'); return; }
+
+  orderInFlight = true;
+  const confirmBtn = document.querySelector('#bookModal .btn-p');
+  if (confirmBtn) confirmBtn.disabled = true;
+
+  try {
+    // 1) Reserve stock atomically
+    const stockRef = window._ref(window._db, `canteenMenu/${item.key}/stock`);
+    const stockTx = await window._runTransaction(stockRef, cur => {
+      const c = Number(cur) || 0;
+      if (c < qty) return;        // aborts the transaction
+      return c - qty;
+    });
+    if (!stockTx.committed) {
+      errBox.textContent = 'That item just sold out — pick another.'; errBox.className = 'lerr on';
+      return;
+    }
+
+    // 2) Deduct balance atomically (roll back stock if this step fails)
+    if (match) {
+      const balRef = window._ref(window._db, `students/${match.key}/canteenBalance`);
+      const balTx = await window._runTransaction(balRef, cur => {
+        const c = Number(cur) || 0;
+        if (c < total) return;
+        return c - total;
+      });
+      if (!balTx.committed) {
+        await window._runTransaction(stockRef, cur => (Number(cur)||0) + qty);
+        errBox.textContent = 'Balance changed — insufficient funds now.'; errBox.className = 'lerr on';
+        return;
+      }
+    }
+
+    // 3) Mint a human-readable order number atomically
+    const counterRef = window._ref(window._db, 'canteenCounters/orderNumber');
+    const ctrTx = await window._runTransaction(counterRef, cur => (Number(cur) || 1000) + 1);
+    const orderNumber = ctrTx.snapshot.val();
+
+    // 4) Write the order under its own unique push key
+    const now = new Date();
+    const order = {
+      orderNumber, name, cls, dashId, roll, qty,
+      itemKey: item.key, itemName: item.name, itemEmoji: item.emoji || '🍽️',
+      price: item.price, total,
+      verified: !!match, sessionKey: SESSION_KEY,
+      time: now.toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'}),
+      date: now.toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'}),
+      createdAt: now.getTime(),
+      status: 'Pending'
+    };
+    const newOrderRef = window._push(window._ref(window._db, 'canteenOrders'));
+    await window._set(newOrderRef, order);
+
+    closeModal('bookModal');
+    const balAfter = match ? (Number(match.data.canteenBalance)||0) - total : null;
+    document.getElementById('sucOrdNum').textContent = '#' + orderNumber;
+    document.getElementById('sucDetails').innerHTML = `
+      <div class="order-detail-row"><span class="order-detail-label">Item</span><span class="order-detail-val">${item.emoji||''} ${item.name}</span></div>
+      <div class="order-detail-row"><span class="order-detail-label">Qty</span><span class="order-detail-val">${qty}</span></div>
+      <div class="order-detail-row"><span class="order-detail-label">Total Paid</span><span class="order-detail-val" style="color:var(--gold2)">₹${total}</span></div>
+      <div class="order-detail-row"><span class="order-detail-label">Name</span><span class="order-detail-val">${name}</span></div>
+      <div class="order-detail-row"><span class="order-detail-label">Class</span><span class="order-detail-val">${cls}</span></div>
+      <div class="order-detail-row"><span class="order-detail-label">Roll No</span><span class="order-detail-val">${roll}</span></div>
+      <div class="order-detail-row"><span class="order-detail-label">Dashboard ID</span><span class="order-detail-val" style="color:var(--gold2)">${dashId}</span></div>
+      ${match
+        ? `<div class="order-detail-row"><span class="order-detail-label">Balance Left</span><span class="order-detail-val" style="color:var(--ok)">₹${balAfter}</span></div>`
+        : `<div class="order-detail-row"><span class="order-detail-label">ID Status</span><span class="order-detail-val" style="color:var(--warn)">⚠ ID not found — collect cash</span></div>`}
+    `;
+    document.getElementById('successModal').classList.add('on');
+    showToast(`Order #${orderNumber} placed!`, 's');
+  } catch (e) {
+    console.error('Order failed:', e);
+    showToast('Order failed — check connection and try again', 'e');
+  } finally {
+    orderInFlight = false;
+    if (confirmBtn) confirmBtn.disabled = false;
+  }
+}
+
+function closeSuccess() { document.getElementById('successModal').classList.remove('on'); renderMenu(); }
+
+// ════════════════════════════════════════
+//  MY ORDERS — only shows orders from THIS device/session
+// ════════════════════════════════════════
+function renderMyOrders() {
+  const list = Object.values(ORDERS)
+    .filter(o => o.sessionKey === SESSION_KEY)
+    .sort((a, b) => b.orderNumber - a.orderNumber);
+
+  document.getElementById('mainContent').innerHTML = `
+    <div class="main">
+      <div class="phd">
+        <div class="p-eye">Order History</div>
+        <div class="p-title">My <span>Orders</span></div>
+        <div class="p-sub">Orders placed from this device</div>
+      </div>
+      ${list.length === 0
+        ? `<div class="empty"><div class="empty-icon">🛒</div><div style="font-family:var(--fm);font-size:11px;letter-spacing:1px">No orders yet — visit the Menu tab to order</div></div>`
+        : `<div class="orders-list">
+            ${list.map((o, i) => `
+              <div class="order-row" style="animation-delay:${i*.04}s">
+                <div class="order-emoji">${o.itemEmoji}</div>
+                <div class="order-info">
+                  <div class="order-item-name">${o.itemName} × ${o.qty}</div>
+                  <div class="order-meta">${o.cls} · ${o.dashId} · ${o.date}, ${o.time}</div>
+                  <div class="order-meta" style="color:var(--gold2);margin-top:4px">₹${o.total}</div>
+                </div>
+                <div style="text-align:right">
+                  <div class="order-num">#${o.orderNumber}</div>
+                  <div class="order-num-label">Order No.</div>
+                  <span class="bd ${o.status==='Collected'?'bk':'bw'}" style="margin-top:6px;display:inline-block">${o.status}</span>
+                </div>
+              </div>`).join('')}
+          </div>`}
+    </div>`;
+}
+
+// ════════════════════════════════════════
+//  ADMIN
+// ════════════════════════════════════════
+function renderAdmin() { adminLoggedIn ? renderAdminPanel() : renderAdminLogin(); }
+
+function renderAdminLogin() {
+  document.getElementById('mainContent').innerHTML = `
+    <div class="login-wrap">
+      <div class="login-card">
+        <div style="font-size:36px;margin-bottom:12px">🔐</div>
+        <div style="font-size:19px;font-weight:700;margin-bottom:5px">Canteen Manager <span style="color:var(--gold)">Login</span></div>
+        <div style="font-size:12px;color:var(--silver);margin-bottom:24px">Enter the manager password</div>
+        <div class="lerr" id="loginErr">Incorrect password.</div>
+        <div class="fg" style="text-align:left"><label>Username</label><input value="canteen_manager" readonly style="opacity:.5"></div>
+        <div class="fg" style="text-align:left"><label>Password</label><input type="password" id="admPass" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <button class="btn btn-p" style="width:100%;justify-content:center;margin-top:6px" onclick="doLogin()">Login</button>
+        <div style="font-family:var(--fm);font-size:8px;color:var(--dim);letter-spacing:1px;margin-top:18px">MVM CANTEEN MANAGEMENT · v4.0 · LIVE SYNC</div>
+      </div>
+    </div>`;
+}
+
+function doLogin() {
+  if (document.getElementById('admPass').value === 'Mvm@canteen2026') {
+    adminLoggedIn = true; renderAdminPanel(); showToast('Welcome, Canteen Manager', 's');
+  } else {
+    document.getElementById('loginErr').classList.add('on');
+  }
+}
+
+function renderAdminPanel() {
+  const list = Object.values(ORDERS);
+  const rev  = list.reduce((s,o) => s + (Number(o.total)||0), 0);
+  document.getElementById('mainContent').innerHTML = `
+    <div class="main">
+      <div class="phd" style="display:flex;align-items:flex-start;justify-content:space-between">
+        <div>
+          <div class="p-eye">Manager Panel</div>
+          <div class="p-title">Canteen <span>Dashboard</span></div>
+          <div class="p-sub">MVM School · Admin controls</div>
+        </div>
+        <button class="btn btn-g" onclick="adminLogout()">Logout</button>
+      </div>
+      <div class="sgrid">
+        <div class="sc ok"   style="animation-delay:.05s"><div class="sc-e">💰 Revenue</div><div class="sc-v" style="color:var(--ok)">₹${rev}</div><div class="sc-l">Total Revenue</div></div>
+        <div class="sc gold" style="animation-delay:.1s"><div class="sc-e">📋 Orders</div><div class="sc-v" style="color:var(--gold2)">${list.length}</div><div class="sc-l">Total Orders</div></div>
+        <div class="sc warn" style="animation-delay:.15s"><div class="sc-e">⏳ Pending</div><div class="sc-v" style="color:var(--warn)">${list.filter(o=>o.status==='Pending').length}</div><div class="sc-l">Pending Pickup</div></div>
+        <div class="sc info" style="animation-delay:.2s"><div class="sc-e">🍽️ Menu</div><div class="sc-v" style="color:var(--info)">${MENU.length}</div><div class="sc-l">Menu Items</div></div>
+      </div>
+      <div class="admin-tabs">
+        <div class="admin-tab ${adminTab==='orders'  ?'on':''}" onclick="setAdminTab('orders')">All Orders</div>
+        <div class="admin-tab ${adminTab==='menu'    ?'on':''}" onclick="setAdminTab('menu')">Manage Menu</div>
+        <div class="admin-tab ${adminTab==='balances'?'on':''}" onclick="setAdminTab('balances')">Student Balances</div>
+      </div>
+      <div id="adminTabContent"></div>
+    </div>`;
+  renderAdminTab();
+}
+
+function setAdminTab(t) { adminTab = t; renderAdminPanel(); }
+function renderAdminTab() {
+  const el = document.getElementById('adminTabContent'); if (!el) return;
+  if (adminTab === 'orders')   renderOrdersTable(el);
+  if (adminTab === 'menu')     renderMenuManage(el);
+  if (adminTab === 'balances') renderBalancesTable(el);
+}
+
+function renderOrdersTable(el) {
+  const list = Object.values(ORDERS).sort((a,b) => b.orderNumber - a.orderNumber);
+  el.innerHTML = `
+    <div class="filter-row">
+      <div class="srch"><span class="srch-ic">🔍</span><input placeholder="Search name, ID, order #..." oninput="filterOrders(this.value)"></div>
+      <select class="statSel" onchange="filterOrderStatus(this.value)">
+        <option value="all">All Status</option><option>Pending</option><option>Ready</option><option>Collected</option>
+      </select>
+    </div>
+    ${list.length === 0
+      ? `<div class="empty"><div class="empty-icon">📋</div><div style="font-family:var(--fm);font-size:11px">No orders yet</div></div>`
+      : `<div class="twrap"><table>
+          <thead><tr><th>Order #</th><th>Student</th><th>Class</th><th>Dashboard ID</th><th>Item</th><th>Qty</th><th>Total</th><th>Time</th><th>Status</th></tr></thead>
+          <tbody id="ordersTbody">${renderOrderRows(list)}</tbody>
+         </table></div>`}`;
+}
+
+function renderOrderRows(list) {
+  return list.map(o => `<tr>
+    <td><span class="big-order-num">#${o.orderNumber}</span></td>
+    <td style="color:var(--ivory);font-weight:500">${o.name}</td>
+    <td><span class="bd bx">${o.cls}</span></td>
+    <td style="font-family:var(--fm);color:var(--gold2)">${o.dashId}${!o.verified?' <span class="bd bw" style="margin-left:4px;font-size:7px">unverified</span>':''}</td>
+    <td>${o.itemEmoji} ${o.itemName}</td>
+    <td style="font-weight:600">${o.qty}</td>
+    <td style="font-family:var(--fm);color:var(--gold2);font-weight:600">₹${o.total}</td>
+    <td style="color:var(--dim);font-family:var(--fm);font-size:11px">${o.time}</td>
+    <td>
+      <select class="statSel" onchange="updateOrderStatus('${o.key}',this.value)">
+        <option ${o.status==='Pending'   ?'selected':''}>Pending</option>
+        <option ${o.status==='Ready'     ?'selected':''}>Ready</option>
+        <option ${o.status==='Collected' ?'selected':''}>Collected</option>
+      </select>
+    </td>
+  </tr>`).join('');
+}
+
+function filterOrders(q) {
+  const all = Object.values(ORDERS).sort((a,b) => b.orderNumber - a.orderNumber);
+  const f = q ? all.filter(o =>
+    o.name.toLowerCase().includes(q.toLowerCase()) || String(o.orderNumber).includes(q) ||
+    o.dashId.toLowerCase().includes(q.toLowerCase()) || (o.cls||'').toLowerCase().includes(q.toLowerCase())
+  ) : all;
+  const tb = document.getElementById('ordersTbody'); if (tb) tb.innerHTML = renderOrderRows(f);
+}
+function filterOrderStatus(s) {
+  const all = Object.values(ORDERS).sort((a,b) => b.orderNumber - a.orderNumber);
+  const f = s==='all' ? all : all.filter(o => o.status===s);
+  const tb = document.getElementById('ordersTbody'); if (tb) tb.innerHTML = renderOrderRows(f);
+}
+function updateOrderStatus(orderKey, status) {
+  if (ORDERS[orderKey]) {
+    ORDERS[orderKey].status = status;
+    if (window._firebaseReady) window._update(window._ref(window._db, `canteenOrders/${orderKey}`), { status }).catch(() => {});
+    showToast(`Order #${ORDERS[orderKey].orderNumber} → ${status}`, 'i');
+  }
+}
+
+function renderBalancesTable(el) {
+  const stuList = Object.entries(STUDENTS);
+  el.innerHTML = stuList.length === 0
+    ? `<div class="empty"><div class="empty-icon">👥</div><div style="font-family:var(--fm);font-size:11px">No students found in database</div></div>`
+    : `<div class="twrap"><table>
+        <thead><tr><th>ID</th><th>Name</th><th>Class</th><th>Balance</th><th>Top Up</th></tr></thead>
+        <tbody>${stuList.map(([k,s]) => `<tr>
+          <td style="font-family:var(--fm);font-size:10px;color:var(--gold2)">${k}</td>
+          <td style="color:var(--ivory);font-weight:500">${s.name||'—'}</td>
+          <td><span class="bd bx">${s.class||'—'}</span></td>
+          <td style="font-family:var(--fm);font-weight:600;color:${Number(s.canteenBalance)>0?'var(--ok)':'var(--bad)'}">₹${Number(s.canteenBalance)||0}</td>
+          <td><div style="display:flex;gap:6px;align-items:center">
+            <input type="number" id="tu_${k}" placeholder="₹" min="1"
+              style="width:72px;background:var(--graphite);border:1px solid var(--rule);padding:5px 8px;color:var(--white);font-family:var(--fm);font-size:11px;outline:none;border-radius:12px">
+            <button class="btn btn-p btn-sm" onclick="adminTopUp('${k}')">Add</button>
+          </div></td>
+        </tr>`).join('')}</tbody>
+      </table></div>`;
+}
+
+function adminTopUp(key) {
+  const amt = parseInt(document.getElementById('tu_'+key).value);
+  if (!amt || amt < 1) { showToast('Enter a valid amount', 'e'); return; }
+  const s = STUDENTS[key]; if (!s) return;
+  if (window._firebaseReady) {
+    const balRef = window._ref(window._db, `students/${key}/canteenBalance`);
+    window._runTransaction(balRef, cur => (Number(cur)||0) + amt)
+      .then(tx => showToast(`₹${amt} added to ${s.name} — balance ₹${tx.snapshot.val()}`, 's'))
+      .catch(() => showToast('Firebase write failed', 'e'));
+  } else { showToast('Offline — cannot update balance', 'e'); }
+  document.getElementById('tu_'+key).value = '';
+}
+
+function renderMenuManage(el) {
+  el.innerHTML = `
+    <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+      <button class="btn btn-p" onclick="openItemModal()">+ Add Menu Item</button>
+    </div>
+    ${MENU.length === 0
+      ? `<div class="empty"><div class="empty-icon">🍽️</div><div style="font-family:var(--fm);font-size:11px">No menu items yet — add your first item above</div></div>`
+      : `<div class="manage-grid">${MENU.map((item,i) => {
+          const sc = item.stock===0?'stock-out':item.stock<=8?'stock-low':'stock-ok';
+          const sl = item.stock===0?'Out':item.stock<=8?`Low (${item.stock})`:item.stock;
+          return `<div class="manage-card" style="animation-delay:${i*.03}s">
+            <div class="manage-top">
+              <div class="manage-emoji">${item.emoji||'🍽️'}</div>
+              <div><div class="manage-name">${item.name}</div><div class="manage-cat">${item.cat}</div></div>
+            </div>
+            <div class="manage-meta">
+              <div class="manage-price">₹${item.price}</div>
+              <div class="stock-edit">
+                <button class="stock-adj" onclick="adjStock('${item.key}',-1)">−</button>
+                <span class="stock-tag ${sc}">${sl}</span>
+                <button class="stock-adj" onclick="adjStock('${item.key}',1)">+</button>
+              </div>
+            </div>
+            <div class="manage-desc">${item.desc}</div>
+            <div class="manage-actions">
+              <button class="avail-toggle ${item.avail?'on':'off'}" onclick="toggleAvail('${item.key}')">${item.avail?'Available':'Hidden'}</button>
+              <button class="btn btn-g btn-sm" style="flex:1;justify-content:center" onclick="openItemModal('${item.key}')">Edit</button>
+              <button class="btn btn-bad btn-sm" onclick="deleteItem('${item.key}')">🗑</button>
+            </div>
+          </div>`;
+        }).join('')}</div>`}`;
+}
+
+function adjStock(key, delta) {
+  const item = MENU.find(m => m.key===key); if (!item) return;
+  const newStock = Math.max(0, item.stock + delta);
+  const updates = { stock: newStock };
+  if (newStock===0) updates.avail = false;
+  if (newStock>0 && !item.avail) updates.avail = true;
+  if (window._firebaseReady) window._update(window._ref(window._db, `canteenMenu/${key}`), updates).catch(() => {});
+  showToast(`${item.name}: stock → ${newStock}`, 'i');
+}
+function toggleAvail(key) {
+  const item = MENU.find(m => m.key===key); if (!item) return;
+  const newAvail = !item.avail;
+  if (window._firebaseReady) window._update(window._ref(window._db, `canteenMenu/${key}`), { avail: newAvail }).catch(() => {});
+  showToast(`${item.name} ${newAvail?'now available':'hidden'}`, 'i');
+}
+function deleteItem(key) {
+  if (!confirm('Remove this item?')) return;
+  if (window._firebaseReady) window._remove(window._ref(window._db, `canteenMenu/${key}`)).catch(() => {});
+  showToast('Item removed', 'i');
+}
+function adminLogout() { adminLoggedIn=false; switchView('menu'); showToast('Logged out', 'i'); }
+
+function openItemModal(key=null) {
+  document.getElementById('editKey').value = key||'';
+  const m = key ? MENU.find(i => i.key===key) : null;
+  document.getElementById('itemModalTitle').textContent = key ? 'Edit Menu Item' : 'Add Menu Item';
+  document.getElementById('imName').value  = m ? m.name  : '';
+  document.getElementById('imEmoji').value = m ? m.emoji : '';
+  document.getElementById('imDesc').value  = m ? m.desc  : '';
+  document.getElementById('imPrice').value = m ? m.price : '';
+  document.getElementById('imStock').value = m ? m.stock : '';
+  document.getElementById('imAvail').value = m ? String(m.avail) : 'true';
+  document.getElementById('imCat').value = m ? m.cat : 'Snacks';
+  document.getElementById('itemModal').classList.add('on');
+}
+
+// saveItem now WRITES the item with set/update directly on a real Firebase
+// key (push() for new items) instead of inventing a numeric id locally —
+// this is the actual fix for items turning into "undefined".
+function saveItem() {
+  const key   = document.getElementById('editKey').value;
+  const name  = document.getElementById('imName').value.trim();
+  const emoji = document.getElementById('imEmoji').value.trim();
+  const desc  = document.getElementById('imDesc').value.trim();
+  const price = parseFloat(document.getElementById('imPrice').value);
+  const cat   = document.getElementById('imCat').value;
+  const stock = parseInt(document.getElementById('imStock').value);
+  const avail = document.getElementById('imAvail').value === 'true';
+  if (!name||!emoji||!desc||isNaN(price)||isNaN(stock)) { showToast('Fill all fields', 'e'); return; }
+
+  if (!window._firebaseReady) { showToast('Offline — cannot save item', 'e'); return; }
+
+  const item = { name, emoji, desc, price, cat, stock, avail };
+
+  if (key) {
+    window._update(window._ref(window._db, `canteenMenu/${key}`), item)
+      .then(() => showToast(`"${name}" updated`, 's'))
+      .catch(err => { console.error(err); showToast('Save failed — check rules', 'e'); });
+  } else {
+    item.createdAt = Date.now();
+    const newRef = window._push(window._ref(window._db, 'canteenMenu'));
+    window._set(newRef, item)
+      .then(() => showToast(`"${name}" added to menu`, 's'))
+      .catch(err => { console.error(err); showToast('Save failed — check rules', 'e'); });
+  }
+  closeModal('itemModal'); setAdminTab('menu');
+}
+
+// ════════════════════════════════════════
+//  TOAST
+// ════════════════════════════════════════
+let toastT;
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast '+(type||'i')+' on';
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 3200);
+}
+
+document.querySelectorAll('.ov').forEach(o =>
+  o.addEventListener('click', function(e) { if(e.target===this) this.classList.remove('on'); })
+);
+document.addEventListener('keydown', e => {
+  if(e.key==='Escape') document.querySelectorAll('.ov.on').forEach(o => o.classList.remove('on'));
+});
+</script>
+</body>
+</html>

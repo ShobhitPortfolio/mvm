@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Maharishi Vidya Mandir – Hyderabad | Best CBSE School</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Montserrat:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ── RESET ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{background:#000;color:#fff;font-family:'Montserrat',sans-serif;font-weight:300;line-height:1.7;overflow-x:hidden;cursor:default}
+a{text-decoration:none;color:inherit}
+img{display:block;max-width:100%}
+/* HIDE CUSTOM CURSOR COMPLETELY */
+#cur,#cur2{display:none!important}
+
+:root{
+  --hh:66px;
+  --sp:clamp(56px,8vw,110px);
+  --border:rgba(255,255,255,0.1);
+  --faint:rgba(255,255,255,0.06);
+  --dim:rgba(255,255,255,0.55);
+}
+
+/* ── SCROLL PROGRESS ── */
+#prog{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,#fff,rgba(255,255,255,.4));z-index:99999;width:0;transition:width .1s}
+
+/* ══════════════════════════════
+   STICKY HEADER
+══════════════════════════════ */
+header{
+  position:fixed;top:0;left:0;right:0;height:var(--hh);
+  background:rgba(0,0,0,0.94);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  z-index:9000;transition:background .4s,border-color .4s;
+}
+header.scrolled{background:rgba(0,0,0,.98);border-color:rgba(255,255,255,.06)}
+.hdr-inner{
+  max-width:1260px;margin:0 auto;height:100%;
+  display:flex;align-items:center;
+  padding:0 clamp(14px,3vw,36px);
+  gap:clamp(10px,2vw,24px);
+}
+
+/* Logo */
+.logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo-badge{
+  width:38px;height:38px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.35);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:11px;font-weight:600;
+  background:rgba(255,255,255,.05);transition:background .3s;flex-shrink:0;
+}
+.logo:hover .logo-badge{background:rgba(255,255,255,.13)}
+.logo-txt{font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.3px;line-height:1.25}
+.logo-sub{font-size:7px;letter-spacing:1.6px;color:rgba(255,255,255,.38);display:block;margin-top:1px}
+
+/* Desktop nav with SLOW dropdown */
+.desk-nav{display:flex;align-items:center;gap:1px;flex:1;justify-content:center;list-style:none}
+.desk-nav>li{position:relative}
+.desk-nav>li>a,.desk-nav>li>button{
+  font-size:10px;font-weight:500;letter-spacing:1px;text-transform:uppercase;
+  color:rgba(255,255,255,.68);
+  padding:8px 10px;border-radius:6px;
+  background:none;border:none;cursor:pointer;
+  display:flex;align-items:center;gap:4px;
+  transition:color .2s,background .2s;white-space:nowrap;
+  font-family:'Montserrat',sans-serif;
+}
+.desk-nav>li>a:hover,.desk-nav>li>button:hover{color:#fff;background:var(--faint)}
+.desk-nav>li>button .chev{width:9px;height:9px;transition:transform .3s;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.8}
+
+/* SLOW DROPDOWN — uses delay so it stays open */
+.mega{
+  position:absolute;top:calc(100% + 6px);left:50%;
+  transform:translateX(-50%) translateY(-6px) scale(.97);
+  background:rgba(4,4,4,.98);
+  border:1px solid rgba(255,255,255,.1);border-radius:12px;
+  padding:6px;min-width:195px;
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .3s ease,transform .3s ease,visibility 0s linear .3s;
+  box-shadow:0 20px 60px rgba(0,0,0,.85);
+}
+/* On hover: show instantly, hide with delay */
+.desk-nav>li:hover .mega{
+  opacity:1;visibility:visible;pointer-events:auto;
+  transform:translateX(-50%) translateY(0) scale(1);
+  transition:opacity .2s ease,transform .25s ease,visibility 0s linear 0s;
+}
+/* Extra safe area to prevent accidental close */
+.desk-nav>li::after{
+  content:'';position:absolute;bottom:-10px;left:0;right:0;height:14px;
+}
+.mega a{
+  display:block;padding:8px 13px;border-radius:8px;
+  font-size:11px;color:rgba(255,255,255,.65);letter-spacing:.3px;
+  transition:background .2s,color .2s;white-space:nowrap;
+}
+.mega a:hover{background:var(--faint);color:#fff}
+.desk-nav>li>button:hover .chev{transform:rotate(180deg)}
+
+/* Header right */
+.hdr-right{display:flex;align-items:center;gap:7px;flex-shrink:0}
+
+/* Dashboard — also slow */
+.dash-wrap{position:relative}
+.dash-btn{
+  font-size:9.5px;font-weight:500;letter-spacing:.9px;text-transform:uppercase;
+  color:#fff;border:1px solid var(--border);border-radius:30px;
+  padding:6px 12px;background:var(--faint);cursor:pointer;
+  display:flex;align-items:center;gap:5px;transition:all .3s;white-space:nowrap;
+  font-family:'Montserrat',sans-serif;
+}
+.dash-btn:hover{background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.25)}
+.dash-btn .chev{width:9px;height:9px;transition:transform .3s;stroke:currentColor;fill:none;stroke-width:1.8}
+.dash-drop{
+  position:absolute;top:calc(100% + 8px);right:0;
+  background:rgba(4,4,4,.98);border:1px solid var(--border);
+  border-radius:12px;padding:6px;min-width:180px;
+  opacity:0;visibility:hidden;
+  transform:translateY(-6px) scale(.97);
+  transition:opacity .3s ease,transform .3s ease,visibility 0s linear .3s;
+  box-shadow:0 20px 60px rgba(0,0,0,.9);
+}
+.dash-wrap:hover .dash-drop{
+  opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0) scale(1);
+  transition:opacity .2s ease,transform .25s ease,visibility 0s linear 0s;
+}
+.dash-wrap::after{content:'';position:absolute;bottom:-10px;left:0;right:0;height:14px}
+.dash-wrap:hover .dash-btn .chev{transform:rotate(180deg)}
+.dash-drop a{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 12px;border-radius:8px;
+  font-size:11.5px;color:rgba(255,255,255,.7);
+  transition:background .2s,color .2s;
+}
+.dash-drop a:hover{background:var(--faint);color:#fff}
+.d-ic{width:26px;height:26px;border-radius:7px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+
+/* Apply btn */
+.apply-btn{
+  font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  color:#000;background:#fff;border:none;border-radius:30px;
+  padding:7px 16px;cursor:pointer;transition:all .3s;white-space:nowrap;
+  font-family:'Montserrat',sans-serif;display:inline-block;
+}
+.apply-btn:hover{background:rgba(255,255,255,.87);transform:scale(1.03)}
+
+/* Hamburger */
+.hbg{
+  display:none;flex-direction:column;justify-content:center;align-items:center;gap:5px;
+  width:36px;height:36px;border-radius:50%;
+  border:1px solid var(--border);background:var(--faint);cursor:pointer;flex-shrink:0;
+}
+.hbg span{display:block;width:15px;height:1.5px;background:#fff;border-radius:2px;transition:transform .35s,opacity .35s}
+.hbg.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.hbg.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hbg.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+
+/* Mobile nav drawer */
+.mob-nav{
+  position:fixed;top:0;right:0;bottom:0;width:min(310px,100vw);
+  background:rgba(3,3,3,.99);backdrop-filter:blur(40px);
+  border-left:1px solid var(--border);z-index:8999;
+  transform:translateX(100%);transition:transform .5s cubic-bezier(.77,0,.175,1);
+  overflow-y:auto;overflow-x:hidden;
+}
+.mob-nav.open{transform:translateX(0)}
+.mob-inner{padding:78px 0 44px;display:flex;flex-direction:column;min-height:100%}
+.mob-item{border-bottom:1px solid rgba(255,255,255,.05)}
+.mob-head{
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;padding:14px 24px;
+  font-family:'Cinzel',serif;font-size:13px;letter-spacing:1.4px;
+  color:rgba(255,255,255,.72);background:none;border:none;cursor:pointer;text-align:left;
+  transition:color .2s,background .2s;
+}
+.mob-head:hover{color:#fff;background:rgba(255,255,255,.03)}
+.mob-head svg{width:11px;height:11px;transition:transform .3s;stroke:currentColor;fill:none;stroke-width:1.8;flex-shrink:0}
+.mob-item.xpnd .mob-head svg{transform:rotate(180deg)}
+.mob-sub{overflow:hidden;max-height:0;transition:max-height .38s ease;background:rgba(255,255,255,.018)}
+.mob-item.xpnd .mob-sub{max-height:380px}
+.mob-sub a{display:block;padding:10px 36px;font-size:11.5px;color:rgba(255,255,255,.52);border-bottom:1px solid rgba(255,255,255,.03);transition:color .2s,padding-left .2s}
+.mob-sub a:hover{color:#fff;padding-left:44px}
+.mob-link{display:block;padding:14px 24px;font-family:'Cinzel',serif;font-size:13px;letter-spacing:1.4px;color:rgba(255,255,255,.72);border-bottom:1px solid rgba(255,255,255,.05);transition:color .2s,background .2s}
+.mob-link:hover{color:#fff;background:rgba(255,255,255,.03)}
+.mob-dash{margin:14px 18px 0;padding:16px;border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,.02)}
+.mob-dash-t{font-size:7.5px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:10px}
+.mob-dash a{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;font-size:12px;color:rgba(255,255,255,.6);transition:background .2s,color .2s}
+.mob-dash a:hover{background:rgba(255,255,255,.06);color:#fff}
+.mob-apply{margin:16px 18px 0}
+.mob-apply a{display:block;text-align:center;padding:12px;background:#fff;color:#000;border-radius:30px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.ovl{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(3px);z-index:8998;opacity:0;visibility:hidden;transition:all .4s}
+.ovl.open{opacity:1;visibility:visible}
+
+/* ══════════════════════════════
+   HERO + SLIDER
+══════════════════════════════ */
+#hero{position:relative;min-height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.slide-wrap{position:absolute;inset:0;z-index:0}
+.slide{
+  position:absolute;inset:0;background-size:cover;background-position:center center;
+  opacity:0;transition:opacity 1.4s ease;
+}
+.slide.on{opacity:1}
+/* dark gradient overlay so text is readable */
+.slide::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(
+    to bottom,
+    rgba(0,0,0,.55) 0%,
+    rgba(0,0,0,.3) 40%,
+    rgba(0,0,0,.65) 75%,
+    rgba(0,0,0,.9) 100%
+  );
+}
+.hero-grid-bg{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.011) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.011) 1px,transparent 1px);
+  background-size:56px 56px;
+  mask-image:radial-gradient(ellipse 80% 70% at 50% 50%,black 20%,transparent 100%);
+}
+
+/* Content sits in bottom half */
+.hero-cnt{
+  position:relative;z-index:2;
+  margin-top:auto;
+  padding:calc(var(--hh) + 20px) clamp(16px,5vw,60px) 0;
+  text-align:center;
+  display:flex;flex-direction:column;align-items:center;
+}
+.h-eye{
+  font-size:8.5px;letter-spacing:4.5px;text-transform:uppercase;color:rgba(255,255,255,.48);
+  margin-bottom:18px;opacity:0;animation:fUp 1s ease .15s forwards;
+  display:flex;align-items:center;justify-content:center;gap:14px;
+}
+.h-eye::before,.h-eye::after{content:'';display:block;width:32px;height:1px;background:rgba(255,255,255,.18)}
+h1.h-ttl{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(40px,7vw,104px);
+  font-weight:300;line-height:1.02;letter-spacing:-1px;
+  opacity:0;animation:fUp 1.2s ease .35s forwards;
+}
+/* FIX: italic via class not <em> alone */
+h1.h-ttl .ital{font-style:italic;font-weight:300}
+.h-sub{
+  font-size:10.5px;letter-spacing:1.8px;text-transform:uppercase;
+  color:rgba(255,255,255,.42);margin-top:20px;
+  opacity:0;animation:fUp 1s ease .6s forwards;
+  padding:0 12px;
+}
+.h-btns{
+  display:flex;gap:12px;margin-top:36px;flex-wrap:wrap;justify-content:center;
+  opacity:0;animation:fUp 1s ease .8s forwards;
+}
+.btn-p{
+  font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:#000;background:#fff;border:none;border-radius:50px;
+  padding:12px 30px;cursor:pointer;transition:all .3s;display:inline-block;
+}
+.btn-p:hover{background:rgba(255,255,255,.87);transform:translateY(-2px);box-shadow:0 10px 28px rgba(255,255,255,.14)}
+.btn-g{
+  font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(255,255,255,.82);background:transparent;
+  border:1px solid rgba(255,255,255,.22);border-radius:50px;
+  padding:12px 30px;cursor:pointer;transition:all .3s;display:inline-block;
+}
+.btn-g:hover{border-color:rgba(255,255,255,.55);color:#fff;transform:translateY(-2px)}
+
+/* Slider dots */
+.sdots{display:flex;gap:7px;margin-top:28px;justify-content:center;opacity:0;animation:fUp .8s ease 1s forwards}
+.sdot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.28);cursor:pointer;border:none;transition:all .35s;flex-shrink:0}
+.sdot.on{background:#fff;width:22px;border-radius:3px}
+
+/* Stats + ticker below hero image */
+.hero-bottom{
+  position:relative;z-index:2;width:100%;
+  background:rgba(0,0,0,.92);
+  border-top:1px solid rgba(255,255,255,.08);
+  padding-bottom:0;
+  opacity:0;animation:fUp .8s ease 1.1s forwards;
+}
+/* STATS ROW */
+.stats-r{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.s-box{
+  padding:18px 12px;text-align:center;
+  border-right:1px solid rgba(255,255,255,.06);
+  transition:background .3s;
+}
+.s-box:last-child{border-right:none}
+.s-box:hover{background:rgba(255,255,255,.04)}
+.s-n{font-family:'Cormorant Garamond',serif;font-size:clamp(26px,4vw,38px);font-weight:300;line-height:1}
+.s-l{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.38);margin-top:4px}
+
+/* TICKER */
+.ticker-w{overflow:hidden;padding:10px 0;border-top:1px solid rgba(255,255,255,.05)}
+.ticker-t{display:flex;white-space:nowrap;animation:tick 42s linear infinite}
+.ticker-t span{font-size:8.5px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.35);padding:0 32px}
+.ticker-t span strong{color:rgba(255,255,255,.72);font-weight:600}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ══════════════════════════════
+   SHARED
+══════════════════════════════ */
+section{position:relative;z-index:1}
+.container{max-width:1160px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
+.s-eye{font-size:8px;letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.s-eye::before{content:'';display:block;width:22px;height:1px;background:rgba(255,255,255,.18)}
+/* FIX: section titles use .ital class */
+h2.s-ttl{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,4.5vw,64px);font-weight:300;line-height:1.06;letter-spacing:-.5px}
+h2.s-ttl .ital{font-style:italic}
+.s-body{font-size:13px;color:rgba(255,255,255,.55);max-width:500px;line-height:1.9;margin-top:14px}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent)}
+
+/* Scroll reveal */
+.sl-r{opacity:0;transform:translateX(50px);transition:opacity .9s ease,transform 1.1s cubic-bezier(.16,1,.3,1)}
+.sl-l{opacity:0;transform:translateX(-50px);transition:opacity .9s ease,transform 1.1s cubic-bezier(.16,1,.3,1)}
+.f-up{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .9s cubic-bezier(.16,1,.3,1)}
+.sc-in{opacity:0;transform:scale(.93);transition:opacity .7s ease,transform .8s cubic-bezier(.16,1,.3,1)}
+.sl-r.vis,.sl-l.vis,.f-up.vis,.sc-in.vis{opacity:1;transform:none}
+
+/* ══════════════════════════════
+   ABOUT
+══════════════════════════════ */
+#about{padding:var(--sp) 0;overflow:hidden}
+.ab-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,72px);align-items:start}
+.ab-img-wrap{position:relative;border-radius:14px;overflow:hidden;flex-shrink:0}
+.ab-img-wrap img{width:100%;height:clamp(280px,40vw,500px);object-fit:cover;display:block}
+.ab-img-wrap::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 55%,rgba(0,0,0,.55))}
+.ab-stat-row{
+  position:absolute;bottom:16px;left:14px;right:14px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+}
+.ab-stat{background:rgba(0,0,0,.72);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:10px 8px;text-align:center}
+.ab-sn{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;line-height:1}
+.ab-sl{font-size:7.5px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.42);margin-top:3px}
+.ab-feats{margin-top:24px;display:flex;flex-direction:column;gap:10px}
+.feat{display:flex;align-items:flex-start;gap:13px;padding:12px 13px;border:1px solid rgba(255,255,255,.05);border-radius:9px;background:rgba(255,255,255,.02);transition:all .3s}
+.feat:hover{border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.04);transform:translateX(4px)}
+.feat-ic{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px}
+.feat h4{font-size:12px;font-weight:600;margin-bottom:2px}
+.feat p{font-size:11px;color:rgba(255,255,255,.46);line-height:1.6}
+
+/* ══════════════════════════════
+   PRINCIPAL / CHAIRMAN
+══════════════════════════════ */
+#principal{padding:var(--sp) 0;background:linear-gradient(180deg,#000 0%,#080808 100%)}
+.pr-grid{display:grid;grid-template-columns:260px 1fr;gap:clamp(28px,5vw,68px);align-items:center}
+.pr-img-box{position:relative;text-align:center}
+.pr-img-box img{width:100%;max-width:260px;border-radius:14px;object-fit:cover;aspect-ratio:3/4;display:block;margin:0 auto;filter:grayscale(10%)}
+.pr-badge{
+  margin-top:14px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;
+  padding:11px 14px;text-align:center;
+}
+.pr-badge-n{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.8px;line-height:1.4}
+.pr-badge-r{font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.38);margin-top:3px}
+.pr-quote{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(18px,2.4vw,30px);font-weight:300;font-style:italic;
+  line-height:1.5;color:rgba(255,255,255,.82);margin-bottom:20px;
+}
+.pr-quote::before{content:'\201C';font-size:72px;line-height:.4;color:rgba(255,255,255,.09);display:block;margin-bottom:10px;font-family:'Georgia',serif;font-style:normal}
+.pr-body{font-size:12.5px;color:rgba(255,255,255,.52);line-height:1.9;margin-top:14px}
+.pr-sig{margin-top:24px;padding-top:18px;border-top:1px solid rgba(255,255,255,.07)}
+.pr-sig-n{font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.8px;margin-bottom:3px}
+.pr-sig-r{font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.38)}
+
+/* ══════════════════════════════
+   ACADEMICS
+══════════════════════════════ */
+#academics{padding:var(--sp) 0}
+.ac-hd{text-align:center;margin-bottom:clamp(28px,4vw,56px)}
+.ac-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.05);border-radius:16px;overflow:hidden}
+.ac-card{background:#000;padding:clamp(20px,3vw,32px) clamp(16px,2.5vw,24px);position:relative;overflow:hidden;cursor:pointer;transition:background .35s}
+.ac-card:hover{background:rgba(255,255,255,.03)}
+.ac-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent);transform:scaleX(0);transition:transform .4s}
+.ac-card:hover::after{transform:scaleX(1)}
+.ac-glow{position:absolute;top:-24px;right:-24px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.04);filter:blur(16px);transition:transform .4s}
+.ac-card:hover .ac-glow{transform:scale(2.8)}
+.ac-img{width:100%;height:130px;object-fit:cover;border-radius:8px;margin-bottom:14px;opacity:.75;transition:opacity .3s}
+.ac-card:hover .ac-img{opacity:1}
+.ac-icon{font-size:26px;margin-bottom:12px;display:block}
+.ac-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;margin-bottom:8px}
+.ac-desc{font-size:11px;color:rgba(255,255,255,.48);line-height:1.8}
+
+/* ══════════════════════════════
+   NEWS
+══════════════════════════════ */
+#news{padding:var(--sp) 0}
+.news-hd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:clamp(24px,4vw,48px);flex-wrap:wrap;gap:14px}
+.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.nc{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:clamp(16px,2.5vw,22px);cursor:pointer;position:relative;overflow:hidden;transition:all .4s cubic-bezier(.16,1,.3,1)}
+.nc::before{content:'';position:absolute;inset:-1px;border-radius:12px;background:linear-gradient(135deg,rgba(255,255,255,.06),transparent 55%);opacity:0;transition:opacity .35s;pointer-events:none}
+.nc:hover::before{opacity:1}
+.nc:hover{border-color:rgba(255,255,255,.18);transform:translateY(-5px);box-shadow:0 18px 48px rgba(0,0,0,.5)}
+.nc-img{width:100%;height:150px;object-fit:cover;border-radius:7px;margin-bottom:12px;opacity:.72;transition:opacity .3s}
+.nc:hover .nc-img{opacity:1}
+.nc-tag{font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:8px;display:block}
+.nc h3{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;line-height:1.3;margin-bottom:8px}
+.nc p{font-size:11px;color:rgba(255,255,255,.48);line-height:1.8}
+.nc-date{font-size:9px;letter-spacing:1.5px;color:rgba(255,255,255,.2);margin-top:14px;display:block;text-transform:uppercase}
+.nc-arr{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;border:1px solid rgba(255,255,255,.13);font-size:10px;margin-top:12px;transition:all .3s}
+.nc:hover .nc-arr{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.3)}
+
+/* ══════════════════════════════
+   ACHIEVEMENTS + SPOTLIGHT
+══════════════════════════════ */
+#achievements{padding:var(--sp) 0;position:relative;overflow:hidden}
+.spot-light{position:absolute;width:440px;height:440px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.055) 0%,transparent 70%);pointer-events:none;transform:translate(-50%,-50%);transition:left .55s ease,top .55s ease;z-index:0}
+.ach-hd{text-align:center;margin-bottom:clamp(28px,4vw,56px);position:relative;z-index:1}
+.ach-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;position:relative;z-index:1}
+.ach-c{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:clamp(16px,2.5vw,22px) 14px;text-align:center;cursor:pointer;transition:all .45s cubic-bezier(.16,1,.3,1)}
+.ach-c:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.18);transform:scale(1.03)}
+.ach-c.lit{border-color:rgba(255,255,255,.32);background:rgba(255,255,255,.06);transform:scale(1.04);box-shadow:0 0 44px rgba(255,255,255,.07)}
+.ach-med{font-size:30px;margin-bottom:10px}
+.ach-title{font-family:'Cormorant Garamond',serif;font-size:13.5px;font-weight:400;line-height:1.4;color:rgba(255,255,255,.82)}
+.ach-sub{font-size:8.5px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:6px}
+
+/* ══════════════════════════════
+   FACILITIES
+══════════════════════════════ */
+#facilities{padding:var(--sp) 0}
+.fac-top{margin-bottom:clamp(24px,4vw,48px)}
+.fac-layout{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,56px);align-items:start}
+.fac-list{display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden}
+.fac-row{display:flex;gap:16px;align-items:flex-start;padding:clamp(16px,2.5vw,24px) clamp(14px,2.5vw,22px);background:#000;border-bottom:1px solid rgba(255,255,255,.04);transition:background .3s}
+.fac-row:last-child{border-bottom:none}
+.fac-row:hover{background:rgba(255,255,255,.03)}
+.fac-thumb{width:64px;height:64px;border-radius:9px;object-fit:cover;flex-shrink:0;opacity:.75;transition:opacity .3s}
+.fac-row:hover .fac-thumb{opacity:1}
+.fac-num{width:64px;height:64px;border-radius:9px;flex-shrink:0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:rgba(255,255,255,.2)}
+.fac-info h4{font-size:12.5px;font-weight:600;margin-bottom:4px}
+.fac-info p{font-size:11px;color:rgba(255,255,255,.48);line-height:1.7}
+/* Right side gallery grid */
+.fac-gallery{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fac-gal{border-radius:10px;overflow:hidden;position:relative;cursor:pointer}
+.fac-gal img{width:100%;height:clamp(95px,12vw,148px);object-fit:cover;display:block;opacity:.72;transition:all .4s}
+.fac-gal:hover img{opacity:1;transform:scale(1.04)}
+.fac-gal:first-child{grid-column:1/-1}
+.fac-gal:first-child img{height:clamp(150px,20vw,220px)}
+.fac-lbl{position:absolute;bottom:9px;left:11px;font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.62);text-shadow:0 1px 4px rgba(0,0,0,.7)}
+.fac-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.35),transparent 55%)}
+
+/* ══════════════════════════════
+   ADMISSIONS
+══════════════════════════════ */
+#admissions{padding:var(--sp) 0}
+.adm-wrap{background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 55%),rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:clamp(24px,4vw,64px);display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,60px);align-items:center}
+.adm-info h2{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,3.8vw,50px);font-weight:300;line-height:1.1;margin-bottom:16px}
+.adm-info h2 .ital{font-style:italic}
+.adm-info p{font-size:13px;color:rgba(255,255,255,.55);line-height:1.9;margin-bottom:24px}
+.adm-btns{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px}
+.adm-rows{border-top:1px solid rgba(255,255,255,.06);padding-top:4px}
+.adm-r{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px}
+.adm-r:last-child{border-bottom:none}
+.adm-l{color:rgba(255,255,255,.38)}
+.adm-v{font-weight:500}
+.contact-box{padding:clamp(18px,3vw,26px);background:rgba(0,0,0,.38);border:1px solid rgba(255,255,255,.08);border-radius:12px}
+.contact-box h4{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:2px;color:rgba(255,255,255,.42);margin-bottom:16px}
+.c-item{display:flex;gap:10px;align-items:center;font-size:12px;color:rgba(255,255,255,.65);margin-bottom:11px}
+.c-ic{font-size:13px;width:17px;text-align:center;flex-shrink:0}
+.contact-map{width:100%;height:130px;border-radius:9px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);margin-bottom:16px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.contact-map img{width:100%;height:100%;object-fit:cover;opacity:.55}
+
+/* ══════════════════════════════
+   GALLERY
+══════════════════════════════ */
+#gallery{padding:var(--sp) 0}
+.gal-hd{text-align:center;margin-bottom:clamp(24px,4vw,48px)}
+.gal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.gal-item{position:relative;border-radius:10px;overflow:hidden;cursor:pointer}
+.gal-item img{width:100%;height:clamp(130px,16vw,210px);object-fit:cover;display:block;transition:all .4s;opacity:.72}
+.gal-item:hover img{opacity:1;transform:scale(1.04)}
+.gal-item:nth-child(1),.gal-item:nth-child(4){grid-column:span 2}
+.gal-item:nth-child(1) img,.gal-item:nth-child(4) img{height:clamp(170px,22vw,270px)}
+.gal-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.4),transparent 55%)}
+.gal-lbl{position:absolute;bottom:11px;left:13px;font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.65);text-shadow:0 1px 4px rgba(0,0,0,.7)}
+
+/* ══════════════════════════════
+   FOOTER
+══════════════════════════════ */
+footer{background:#000;border-top:1px solid rgba(255,255,255,.06);padding:clamp(44px,7vw,76px) 0 34px}
+.ft-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:clamp(20px,4vw,52px);margin-bottom:48px}
+.ft-logo-badge{width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:11px;color:#fff;margin-bottom:16px;background:rgba(255,255,255,.04)}
+.ft-brand p{font-size:11.5px;color:rgba(255,255,255,.36);line-height:1.9;max-width:220px}
+.socials{display:flex;gap:9px;margin-top:18px}
+.soc{width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,.38);transition:all .3s}
+.soc:hover{border-color:rgba(255,255,255,.45);color:#fff}
+.ft-col h5{font-size:8.5px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,.36);margin-bottom:16px}
+.ft-col a,.ft-col p{display:block;font-size:11px;color:rgba(255,255,255,.36);margin-bottom:9px;transition:color .2s}
+.ft-col a:hover{color:#fff}
+.ft-btm{border-top:1px solid rgba(255,255,255,.05);padding-top:26px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.ft-btm p{font-size:10px;color:rgba(255,255,255,.2)}
+
+/* ══════════════════════════════
+   AI CHAT WIDGET
+══════════════════════════════ */
+.ai-fab{
+  position:fixed;bottom:clamp(18px,4vw,28px);right:clamp(14px,4vw,28px);
+  width:50px;height:50px;border-radius:50%;
+  background:#fff;color:#000;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;z-index:8990;
+  box-shadow:0 6px 28px rgba(0,0,0,.55);
+  transition:all .3s cubic-bezier(.16,1,.3,1);
+}
+.ai-fab:hover{transform:scale(1.1);box-shadow:0 10px 36px rgba(0,0,0,.65)}
+.ai-fab .ai-dot{position:absolute;top:-2px;right:-2px;width:13px;height:13px;border-radius:50%;background:#22c55e;border:2px solid #000}
+.ai-win{
+  position:fixed;
+  bottom:calc(clamp(18px,4vw,28px) + 58px);
+  right:clamp(14px,4vw,28px);
+  width:min(370px,calc(100vw - 28px));
+  height:min(500px,calc(100vh - 130px));
+  background:rgba(5,5,5,.98);border:1px solid rgba(255,255,255,.1);
+  border-radius:18px;z-index:8989;
+  display:flex;flex-direction:column;
+  transform:scale(.88) translateY(16px);opacity:0;
+  transition:all .32s cubic-bezier(.16,1,.3,1);
+  pointer-events:none;
+  box-shadow:0 22px 72px rgba(0,0,0,.85);overflow:hidden;
+}
+.ai-win.open{transform:scale(1) translateY(0);opacity:1;pointer-events:auto}
+.ai-hdr{padding:13px 16px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:9px;flex-shrink:0}
+.ai-hdr-ic{width:30px;height:30px;border-radius:9px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:15px}
+.ai-hdr-info{flex:1}
+.ai-hdr-n{font-size:12.5px;font-weight:600;letter-spacing:.2px}
+.ai-hdr-s{font-size:9.5px;color:rgba(255,255,255,.38);margin-top:1px}
+.ai-hdr-close{background:none;border:none;color:rgba(255,255,255,.38);cursor:pointer;font-size:16px;padding:4px;transition:color .2s}
+.ai-hdr-close:hover{color:#fff}
+.ai-clear{background:none;border:none;color:rgba(255,255,255,.28);cursor:pointer;font-size:11px;padding:3px;transition:color .2s;font-family:'Montserrat',sans-serif}
+.ai-clear:hover{color:rgba(255,255,255,.55)}
+
+/* Setup screen */
+.ai-setup{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px;text-align:center;gap:12px}
+.ai-setup h4{font-size:14px;font-weight:600;letter-spacing:.4px}
+.ai-setup p{font-size:11.5px;color:rgba(255,255,255,.48);line-height:1.7}
+.ai-inp-key{width:100%;padding:9px 13px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:9px;color:#fff;font-size:11.5px;font-family:'Montserrat',sans-serif;outline:none;transition:border-color .2s}
+.ai-inp-key::placeholder{color:rgba(255,255,255,.28)}
+.ai-inp-key:focus{border-color:rgba(255,255,255,.28)}
+.ai-start-btn{width:100%;padding:9.5px;background:#fff;color:#000;border:none;border-radius:9px;font-size:10.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .3s;font-family:'Montserrat',sans-serif}
+.ai-start-btn:hover{background:rgba(255,255,255,.87)}
+.ai-demo-btn{font-size:10px;color:rgba(255,255,255,.3);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:'Montserrat',sans-serif}
+.ai-demo-btn:hover{color:rgba(255,255,255,.55)}
+.provider-note{font-size:9.5px;color:rgba(255,255,255,.25);line-height:1.5}
+
+/* Chat */
+.ai-chat-area{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.ai-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:9px;scroll-behavior:smooth}
+.ai-msgs::-webkit-scrollbar{width:3px}
+.ai-msgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:2px}
+.msg{max-width:84%;padding:9px 13px;border-radius:12px;font-size:12px;line-height:1.65}
+.msg.bot{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.07);align-self:flex-start;border-radius:12px 12px 12px 3px}
+.msg.usr{background:#fff;color:#000;align-self:flex-end;border-radius:12px 12px 3px 12px}
+.typing-dots span{display:inline-block;width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.45);animation:blink 1.2s infinite;margin:0 2px;vertical-align:middle}
+.typing-dots span:nth-child(2){animation-delay:.2s}
+.typing-dots span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+.ai-input-row{padding:10px;border-top:1px solid rgba(255,255,255,.07);display:flex;gap:7px;align-items:flex-end;flex-shrink:0}
+.ai-txt{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:8px 12px;color:#fff;font-size:11.5px;font-family:'Montserrat',sans-serif;outline:none;resize:none;line-height:1.5;max-height:90px;transition:border-color .2s}
+.ai-txt::placeholder{color:rgba(255,255,255,.26)}
+.ai-txt:focus{border-color:rgba(255,255,255,.26)}
+.ai-send{width:34px;height:34px;border-radius:9px;background:#fff;color:#000;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;transition:all .2s}
+.ai-send:hover{background:rgba(255,255,255,.87)}
+.ai-send:disabled{opacity:.35;cursor:default}
+
+/* ── ANIMATIONS ── */
+@keyframes fUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══════════════════════════════
+   RESPONSIVE
+══════════════════════════════ */
+@media(max-width:1024px){
+  .ab-grid,.fac-layout,.pr-grid,.adm-wrap{grid-template-columns:1fr;gap:28px}
+  .pr-grid{grid-template-columns:220px 1fr}
+  .ac-grid{grid-template-columns:repeat(2,1fr)}
+  .ach-grid{grid-template-columns:repeat(2,1fr)}
+  .ft-grid{grid-template-columns:1fr 1fr;gap:28px}
+  .gal-grid{grid-template-columns:repeat(2,1fr)}
+  .gal-item:nth-child(1),.gal-item:nth-child(4){grid-column:span 2}
+  .fac-gallery{display:none}
+  .fac-layout{grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  :root{--sp:56px}
+  .desk-nav,.apply-btn,.dash-wrap{display:none!important}
+  .hbg{display:flex!important}
+  .logo-txt{display:none}
+  .logo-badge{width:34px;height:34px;font-size:10px}
+  .hdr-inner{padding:0 14px;gap:10px}
+
+  /* Hero mobile */
+  h1.h-ttl{font-size:clamp(34px,10vw,56px)}
+  .h-btns{gap:9px}
+  .btn-p,.btn-g{padding:11px 22px;font-size:9.5px}
+
+  /* Stats 2×2 on mobile */
+  .stats-r{grid-template-columns:repeat(2,1fr)}
+  .s-box{border-right:none;border-bottom:1px solid rgba(255,255,255,.06)}
+  .s-box:nth-child(1),.s-box:nth-child(2){border-right:1px solid rgba(255,255,255,.06)}
+  .s-box:nth-child(3),.s-box:nth-child(4){border-bottom:none}
+
+  /* About mobile */
+  .ab-grid{grid-template-columns:1fr}
+  .ab-stat-row{grid-template-columns:repeat(3,1fr)}
+
+  /* Principal mobile */
+  .pr-grid{grid-template-columns:1fr!important;text-align:center}
+  .pr-img-box img{max-width:200px;margin:0 auto}
+  .s-eye{justify-content:center}
+  .pr-quote::before{text-align:center}
+
+  /* Academics */
+  .ac-grid{grid-template-columns:1fr}
+
+  /* News */
+  .news-grid{grid-template-columns:1fr}
+  .news-hd{flex-direction:column;align-items:flex-start}
+
+  /* Achievements */
+  .ach-grid{grid-template-columns:repeat(2,1fr)}
+
+  /* Facilities */
+  .fac-layout{grid-template-columns:1fr!important}
+  .fac-gallery{display:none}
+
+  /* Admissions */
+  .adm-wrap{grid-template-columns:1fr;padding:20px 16px}
+  .adm-btns{flex-direction:column}
+  .adm-btns .btn-p,.adm-btns .btn-g{text-align:center}
+
+  /* Gallery */
+  .gal-grid{grid-template-columns:1fr}
+  .gal-item:nth-child(1),.gal-item:nth-child(4){grid-column:span 1}
+  .gal-item img,.gal-item:nth-child(1) img,.gal-item:nth-child(4) img{height:180px}
+
+  /* Footer */
+  .ft-grid{grid-template-columns:1fr;gap:24px}
+  .ft-btm{flex-direction:column;text-align:center}
+
+  /* AI chat */
+  .ai-win{right:14px;left:14px;width:auto}
+}
+@media(max-width:480px){
+  .ach-grid{grid-template-columns:1fr 1fr}
+  .h-eye{font-size:7.5px;letter-spacing:3px}
+}
+</style>
+</head>
+<body>
+<!-- Hidden – cursor disabled -->
+<div id="cur" style="display:none"></div>
+<div id="cur2" style="display:none"></div>
+<div id="prog"></div>
+<div class="ovl" id="ovl" onclick="closeMob()"></div>
+
+<!-- ══ MOBILE DRAWER ══ -->
+<nav class="mob-nav" id="mobNav">
+  <div class="mob-inner">
+    <a class="mob-link" href="#" onclick="closeMob()">Home</a>
+
+    <div class="mob-item" id="mi-ab">
+      <button class="mob-head" onclick="xpnd('mi-ab')">About Us<svg viewBox="0 0 10 10"><path d="M2 3.5L5 6.5L8 3.5"/></svg></button>
+      <div class="mob-sub">
+        <a href="#about" onclick="closeMob()">Introduction</a>
+        <a href="#principal" onclick="closeMob()">Chairman's Desk</a>
+        <a href="#" onclick="closeMob()">Vision &amp; Mission</a>
+        <a href="#" onclick="closeMob()">School Profile</a>
+        <a href="#" onclick="closeMob()">Salient Features</a>
+      </div>
+    </div>
+
+    <div class="mob-item" id="mi-ac">
+      <button class="mob-head" onclick="xpnd('mi-ac')">Academics<svg viewBox="0 0 10 10"><path d="M2 3.5L5 6.5L8 3.5"/></svg></button>
+      <div class="mob-sub">
+        <a href="#academics" onclick="closeMob()">Overview</a>
+        <a href="#" onclick="closeMob()">Faculty</a>
+        <a href="#" onclick="closeMob()">Exam Schedules</a>
+        <a href="#" onclick="closeMob()">Results</a>
+        <a href="#" onclick="closeMob()">Book List</a>
+        <a href="#" onclick="closeMob()">Circulars</a>
+      </div>
+    </div>
+
+    <div class="mob-item" id="mi-adm">
+      <button class="mob-head" onclick="xpnd('mi-adm')">Admission<svg viewBox="0 0 10 10"><path d="M2 3.5L5 6.5L8 3.5"/></svg></button>
+      <div class="mob-sub">
+        <a href="mvmadmission.html" onclick="closeMob()">Apply Now</a>
+        <a href="mvmadmission.html" onclick="closeMob()">Fee Structure</a>
+        <a href="student.html" onclick="closeMob()">Bus Routes</a>
+        <a href="mvmadmission.html" onclick="closeMob()">Download Form</a>
+      </div>
+    </div>
+
+    <div class="mob-item" id="mi-ach">
+      <button class="mob-head" onclick="xpnd('mi-ach')">Achievements<svg viewBox="0 0 10 10"><path d="M2 3.5L5 6.5L8 3.5"/></svg></button>
+      <div class="mob-sub">
+        <a href="#achievements" onclick="closeMob()">Awards</a>
+        <a href="#" onclick="closeMob()">Sports</a>
+        <a href="#" onclick="closeMob()">Arts &amp; Cultural</a>
+        <a href="#" onclick="closeMob()">MNCC/MRCC</a>
+      </div>
+    </div>
+
+    <a class="mob-link" href="#news" onclick="closeMob()">News &amp; Events</a>
+    <a class="mob-link" href="#facilities" onclick="closeMob()">Facilities</a>
+    <a class="mob-link" href="#gallery" onclick="closeMob()">Gallery</a>
+    <a class="mob-link" href="mvmcontact.html" onclick="closeMob()">Contact</a>
+
+    <div class="mob-dash">
+      <div class="mob-dash-t">Dashboards</div>
+      <a href="student.html" onclick="closeMob()"><div class="d-ic">👤</div>Profile</a>
+      <a href="library.html" onclick="closeMob()"><div class="d-ic">📚</div>Library</a>
+      <a href="#" onclick="closeMob()"><div class="d-ic">🍽️</div>Canteen</a>
+    </div>
+    <div class="mob-apply"><a href="mvmadmission.html" onclick="closeMob()">Apply 2026–27</a></div>
+  </div>
+</nav>
+
+<!-- ══ STICKY HEADER ══ -->
+<header id="hdr">
+  <div class="hdr-inner">
+    <a class="logo" href="#">
+      <div class="logo-badge">MVM</div>
+      <div class="logo-txt">
+        Maharishi Vidya Mandir
+        <span class="logo-sub">Hyderabad · CBSE · Est. 2000</span>
+      </div>
+    </a>
+
+    <ul class="desk-nav">
+      <li>
+        <button>About Us <svg class="chev" viewBox="0 0 10 10"><path d="M2 3.5L5 6.5L8 3.5"/></svg></button>
+        <div class="mega">
+          <a href="#about">Introduction</a>
+          <a href="#principal">Chairman's Desk</a>
+          <a href="#">Vision &amp; Mission</a>
+          <a href="#">School Profile</a>
+          <a href="#">Salient Features</a>
+          <a href="#">School Calendar</a>
+        </div>
+      </li>
+      <li>
+        <button>Academics <svg class="chev" viewBox="0 0 10 10"><path d="M2 3.5L5 6.5L8 3.5"/></svg></button>
+        <div class="mega">
+          <a href="#academics">Overview</a>
+          <a href="#">Faculty</a>
+          <a href="#">Exam Schedules</a>
+          <a href="#">Results</a>
+          <a href="#">Book List</a>
+          <a href="#">Circulars</a>
+        </div>
+      </li>
+      <li>
+        <button>Admission <svg class="chev" viewBox="0 0 10 10"><path d="M2 3.5L5 6.5L8 3.5"/></svg></button>
+        <div class="mega">
+          <a href="mvmadmission.html">Apply Now</a>
+          <a href="mvmadmission.html">Teacher Application</a>
+          <a href="mvmadmission.html">Bus Routes</a>
+          <a href="mvmadmission.html">Download Form</a>
+        </div>
+      </li>
+      <li>
+        <button>Achievements <svg class="chev" viewBox="0 0 10 10"><path d="M2 3.5L5 6.5L8 3.5"/></svg></button>
+        <div class="mega">
+          <a href="#achievements">Awards &amp; Honours</a>
+          <a href="#">Sports</a>
+          <a href="#">Arts &amp; Cultural</a>
+          <a href="#">MNCC/MRCC</a>
+        </div>
+      </li>
+      <li><a href="#news">News</a></li>
+      <li><a href="#facilities">Facilities</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="mvmcontact.html">Contact Us</a></li>
+    </ul>
+
+    <div class="hdr-right">
+      <div class="dash-wrap">
+        <button class="dash-btn">
+          Dashboard
+          <svg class="chev" viewBox="0 0 10 10"><path d="M2 3.5L5 6.5L8 3.5"/></svg>
+          <div class="dash-drop">
+            <a href="student.html"><div class="d-ic">👤</div>Profile</a>
+            <a href="library.html"><div class="d-ic">📚</div>Library</a>
+            <a href="student.html"><div class="d-ic">🍽️</div>Canteen</a>
+          </div>
+        </button>
+      </div>
+      <a class="apply-btn" href="mvmadmission.html">Apply 2026–27</a>
+      <button class="hbg" id="hbg" onclick="toggleMob()"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════
+     HERO SECTION
+══════════════════════════════ -->
+<section id="hero">
+  <!-- Slides — high quality images -->
+  <div class="slide-wrap">
+    <div class="slide on" style="background-image:url('https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=1600&q=85&fit=crop')"></div>
+    <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1600&q=85&fit=crop')"></div>
+    <div class="slide" style="background-image:url('https://mvmhyderabad.org/upload/homeslider/mvmhyd-Silver-Jubilee-2024-22-.jpg')"></div>
+    <div class="slide" style="background-image:url('https://mvmhyderabad.org/upload/homeslider/JAL-PAKHWADA.jpg')"></div>
+    <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=1600&q=85&fit=crop')"></div>
+  </div>
+  <div class="hero-grid-bg"></div>
+
+  <!-- Text content -->
+  <div class="hero-cnt">
+    <div class="h-eye">CBSE Affiliated · Grades LKG–XII · Hyderabad, Telangana</div>
+    <h1 class="h-ttl">Where Every Child<br><span class="ital">Finds Their Excellence</span></h1>
+    <p class="h-sub">Maharishi Global Education Movement · 150 Branches · 14 States · 85,000 Students</p>
+    <div class="h-btns">
+      <a class="btn-p" href="#admissions">Apply for Admission</a>
+      <a class="btn-g" href="#about">Explore School</a>
+    </div>
+    <div class="sdots" id="sdots"></div>
+  </div>
+
+  <!-- Stats + Ticker BELOW hero — outside slide overlay -->
+  <div class="hero-bottom">
+    <div class="container">
+      <div class="stats-r">
+        <div class="s-box"><div class="s-n">25+</div><div class="s-l">Years of Legacy</div></div>
+        <div class="s-box"><div class="s-n">150</div><div class="s-l">Branches Nationwide</div></div>
+        <div class="s-box"><div class="s-n">85K+</div><div class="s-l">Students Enrolled</div></div>
+        <div class="s-box"><div class="s-n">6500+</div><div class="s-l">Teaching Staff</div></div>
+      </div>
+    </div>
+    <div class="ticker-w">
+      <div class="ticker-t" id="tkr">
+        <span><strong>ADMISSIONS OPEN</strong> Session 2026–27</span>
+        <span><strong>ACHIEVEMENT</strong> Gold Medal · State Karate Championship</span>
+        <span><strong>MAHARISHI AWARD</strong> Sr. Secondary Category</span>
+        <span><strong>CBSE AFFILIATED</strong> One of India's Largest School Chains</span>
+        <span><strong>SILVER JUBILEE</strong> 25 Years of Excellence · 2024</span>
+        <span><strong>85,000+ STUDENTS</strong> Across 150 Branches · 14 States</span>
+        <span><strong>ADMISSIONS OPEN</strong> Session 2026–27</span>
+        <span><strong>ACHIEVEMENT</strong> Gold Medal · State Karate Championship</span>
+        <span><strong>MAHARISHI AWARD</strong> Sr. Secondary Category</span>
+        <span><strong>CBSE AFFILIATED</strong> One of India's Largest School Chains</span>
+        <span><strong>SILVER JUBILEE</strong> 25 Years of Excellence · 2024</span>
+        <span><strong>85,000+ STUDENTS</strong> Across 150 Branches · 14 States</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════
+     ABOUT
+══════════════════════════════ -->
+<section id="about" style="padding:var(--sp) 0;overflow:hidden">
+  <div class="container">
+    <div class="ab-grid">
+      <div class="sl-l">
+        <div class="ab-img-wrap">
+          <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=900&q=85&fit=crop" alt="MVM Hyderabad School Campus" loading="lazy"/>
+          <div class="ab-stat-row">
+            <div class="ab-stat"><div class="ab-sn">25+</div><div class="ab-sl">Years</div></div>
+            <div class="ab-stat"><div class="ab-sn">7.05</div><div class="ab-sl">Acres</div></div>
+            <div class="ab-stat"><div class="ab-sn">2000</div><div class="ab-sl">Est.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="sl-r">
+        <div class="s-eye">About Us</div>
+        <h2 class="s-ttl">An Established Leader in<br><span class="ital">Quality Education</span></h2>
+        <p class="s-body">Maharishi Vidya Mandir (MVM) School, Hyderabad is part of the Maharishi Global Education Movement — one of India's largest school systems with 150 branches across 14 states, serving 85,000 students from LKG to Class XII.</p>
+        <p class="s-body" style="margin-top:10px">Situated in Girish Park, Kondapur, Hyderabad on 7.05 acres near Hi-Tech City, MVM integrates CBSE excellence with Transcendental Meditation and Maharishi Vedic Science — nurturing complete intelligence in every student.</p>
+        <div class="ab-feats">
+          <div class="feat"><div class="feat-ic">📚</div><div><h4>CBSE Curriculum</h4><p>Grades LKG–XII with a nationally-recognised CBSE framework</p></div></div>
+          <div class="feat"><div class="feat-ic">🧘</div><div><h4>Transcendental Meditation</h4><p>Unique wellness programme integrated into daily school life</p></div></div>
+          <div class="feat"><div class="feat-ic">🌿</div><div><h4>Pollution-Free Campus</h4><p>Lush 7-acre eco campus near Hi-Tech City, Hyderabad</p></div></div>
+          <div class="feat"><div class="feat-ic">🏆</div><div><h4>Award-Winning Excellence</h4><p>Maharishi Award recipient for outstanding Sr. Secondary performance</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════
+     CHAIRMAN / PRINCIPAL DESK
+══════════════════════════════ -->
+<section id="principal">
+  <div class="container">
+    <div class="pr-grid">
+      <div class="sl-l f-up">
+        <div class="pr-img-box">
+          <!-- Male chairman image from girishji.in -->
+          <img src="https://girishji.in/images/headerLogo2.png"
+               alt="Brahmachari Dr. Girish Chandra Varma"
+               loading="lazy"
+               onerror="this.onerror=null;this.src='https://mvmindia.com/images/maharishi-vidya-mandir-school-mvm.jpg'"
+               style="border-radius:14px;width:100%;max-width:260px;margin:0 auto;display:block;background:#111;padding:20px;"/>
+          <div class="pr-badge">
+            <div class="pr-badge-n">Brahmachari (Dr.) Girish Chandra Varma</div>
+            <div class="pr-badge-r">B.Sc., LL.B., B.Mus., Ph.D.</div>
+            <div class="pr-badge-r" style="margin-top:3px">Chairman · Maharishi Vidya Mandir Group</div>
+          </div>
+        </div>
+      </div>
+      <div class="sl-r">
+        <div class="s-eye">Leadership</div>
+        <h2 class="s-ttl">Chairman's<br><span class="ital">Message</span></h2>
+        <div class="pr-quote">
+          Education is not merely the transfer of knowledge — it is the awakening of the total potential of every child, through the light of Maharishi's Consciousness-Based Education.
+        </div>
+        <p class="pr-body">At Maharishi Vidya Mandir, Hyderabad, we believe every student carries within them an infinite reservoir of intelligence and creativity. Our mission is to provide an environment — through world-class academics, transcendental meditation, and dedicated teachers — where that potential blossoms naturally.</p>
+        <p class="pr-body" style="margin-top:10px">Brahmachari (Dr.) Girish Chandra Varma is the most blessed disciple of His Holiness Maharishi Mahesh Yogi Ji. He is Chancellor of Maharishi Mahesh Yogi Vedic Vishwavidyalaya and Chairman of Maharishi Vidya Mandir Schools Group — guiding 150 schools, 85,000 students across India.</p>
+        <div class="pr-sig">
+          <div class="pr-sig-n">Brahmachari (Dr.) Girish Chandra Varma</div>
+          <div class="pr-sig-r">Chairman · Maharishi Shiksha Sansthan</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════
+     ACADEMICS
+══════════════════════════════ -->
+<section id="academics">
+  <div class="container">
+    <div class="ac-hd f-up">
+      <div class="s-eye" style="justify-content:center">What We Offer</div>
+      <h2 class="s-ttl" style="text-align:center">A Complete <span class="ital">Learning Ecosystem</span></h2>
+      <p class="s-body" style="margin:12px auto 0;text-align:center;max-width:520px">From cutting-edge labs to sprawling grounds — every facet of school life ignites curiosity and nurtures talent.</p>
+    </div>
+    <div class="ac-grid">
+      <div class="ac-card sc-in">
+        <div class="ac-glow"></div>
+        <img class="ac-img" src="https://images.unsplash.com/photo-1532094349884-543559015e0b?w=600&q=80&fit=crop" alt="Science Lab" loading="lazy"/>
+        <span class="ac-icon">🔬</span>
+        <div class="ac-title">Science Laboratories</div>
+        <p class="ac-desc">Fully equipped Physics, Chemistry and Biology labs enabling hands-on, experiment-driven learning across all senior grades.</p>
+      </div>
+      <div class="ac-card sc-in" style="transition-delay:.07s">
+        <div class="ac-glow"></div>
+        <img class="ac-img" src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=600&q=80&fit=crop" alt="Computer Lab" loading="lazy"/>
+        <span class="ac-icon">💻</span>
+        <div class="ac-title">Computer Science Lab</div>
+        <p class="ac-desc">State-of-the-art ICT facility with modern hardware, coding environments and digital learning tools for 21st-century readiness.</p>
+      </div>
+      <div class="ac-card sc-in" style="transition-delay:.14s">
+        <div class="ac-glow"></div>
+        <img class="ac-img" src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&q=80&fit=crop" alt="Library" loading="lazy"/>
+        <span class="ac-icon">📖</span>
+        <div class="ac-title">Library & Resource Centre</div>
+        <p class="ac-desc">Vast curated library with thousands of titles, digital resources, and dedicated reading zones fostering a love for knowledge.</p>
+      </div>
+      <div class="ac-card sc-in" style="transition-delay:.07s">
+        <div class="ac-glow"></div>
+        <img class="ac-img" src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80&fit=crop" alt="Sports" loading="lazy"/>
+        <span class="ac-icon">🏏</span>
+        <div class="ac-title">Sports Complex</div>
+        <p class="ac-desc">Extensive sports facilities nurturing champions in Karate, athletics, cricket and more at state and national levels.</p>
+      </div>
+      <div class="ac-card sc-in" style="transition-delay:.14s">
+        <div class="ac-glow"></div>
+        <img class="ac-img" src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&q=80&fit=crop" alt="Arts" loading="lazy"/>
+        <span class="ac-icon">🎭</span>
+        <div class="ac-title">Arts & Cultural</div>
+        <p class="ac-desc">Dynamic arts programme covering classical dance, music, drama and visual arts — building creativity and stage confidence.</p>
+      </div>
+      <div class="ac-card sc-in" style="transition-delay:.21s">
+        <div class="ac-glow"></div>
+        <img class="ac-img" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80&fit=crop" alt="Meditation" loading="lazy"/>
+        <span class="ac-icon">🧘</span>
+        <div class="ac-title">Meditation Centre</div>
+        <p class="ac-desc">Dedicated Transcendental Meditation facility — the signature Maharishi programme developing inner potential and self-awareness.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════
+     NEWS
+══════════════════════════════ -->
+<section id="news">
+  <div class="container">
+    <div class="news-hd">
+      <div class="f-up">
+        <div class="s-eye">Latest</div>
+        <h2 class="s-ttl">News &amp; <span class="ital">Updates</span></h2>
+      </div>
+      <a class="btn-g" href="#" style="flex-shrink:0">View All News</a>
+    </div>
+    <div class="news-grid">
+      <div class="nc f-up">
+        <img class="nc-img" src="https://mvmhyderabad.org/upload/homeslider/mvmhyd-Silver-Jubilee-2024-22-.jpg" alt="Silver Jubilee" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&q=80'"/>
+        <span class="nc-tag">Achievement · 2024</span>
+        <h3>State Karate Championship — Gold</h3>
+        <p>MVM Hyderabad students clinched gold medals at the state-level Karate championship, showcasing excellence and discipline.</p>
+        <span class="nc-date">2024</span><div class="nc-arr">→</div>
+      </div>
+      <div class="nc f-up" style="transition-delay:.09s">
+        <img class="nc-img" src="https://mvmhyderabad.org/upload/homeslider/mvmhyd-Silver-Jubilee-2024-23.jpg" alt="Silver Jubilee 2024" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=600&q=80'"/>
+        <span class="nc-tag">Event · 2024</span>
+        <h3>Silver Jubilee Celebrations 2024</h3>
+        <p>MVM Hyderabad celebrates 25 glorious years of educational excellence, cultural heritage and transformative learning.</p>
+        <span class="nc-date">2024</span><div class="nc-arr">→</div>
+      </div>
+      <div class="nc f-up" style="transition-delay:.18s">
+        <img class="nc-img" src="https://mvmhyderabad.org/upload/homeslider/JAL-PAKHWADA.jpg" alt="Jal Pakhwada" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=600&q=80'"/>
+        <span class="nc-tag">Event · 2024</span>
+        <h3>Jal Pakhwada — Water Conservation Drive</h3>
+        <p>Students actively participated in the national Jal Pakhwada fortnight, promoting water conservation through community outreach.</p>
+        <span class="nc-date">2024</span><div class="nc-arr">→</div>
+      </div>
+      <div class="nc f-up" style="transition-delay:.07s">
+        <img class="nc-img" src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&q=80&fit=crop" alt="Admissions" loading="lazy"/>
+        <span class="nc-tag">Admissions · 2026</span>
+        <h3>Admissions Open — Session 2026–27</h3>
+        <p>Applications are accepted for Classes LKG to X &amp; XII. Limited seats — apply now to secure your child's future.</p>
+        <span class="nc-date">2026</span><div class="nc-arr">→</div>
+      </div>
+      <div class="nc f-up" style="transition-delay:.16s">
+        <img class="nc-img" src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&q=80&fit=crop" alt="Cultural" loading="lazy"/>
+        <span class="nc-tag">Cultural · 2024</span>
+        <h3>MNCC / MRCC Annual Cultural Programme</h3>
+        <p>The Maharishi National Cultural Convention brought together students from branches across India in a Vedic arts celebration.</p>
+        <span class="nc-date">2024</span><div class="nc-arr">→</div>
+      </div>
+      <div class="nc f-up" style="transition-delay:.25s">
+        <img class="nc-img" src="https://images.unsplash.com/photo-1567168544230-f5a2e6a3d5a8?w=600&q=80&fit=crop" alt="Award" loading="lazy"/>
+        <span class="nc-tag">Recognition · 2025</span>
+        <h3>Maharishi Award — Senior Secondary Excellence</h3>
+        <p>MVM Hyderabad received the prestigious Maharishi Award for outstanding position in the Senior Secondary category.</p>
+        <span class="nc-date">2025</span><div class="nc-arr">→</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════
+     ACHIEVEMENTS + SPOTLIGHT
+══════════════════════════════ -->
+<section id="achievements">
+  <div class="spot-light" id="spotEl"></div>
+  <div class="container">
+    <div class="ach-hd f-up">
+      <div class="s-eye" style="justify-content:center">Pride of MVM</div>
+      <h2 class="s-ttl" style="text-align:center"><span class="ital">Achievements</span> &amp; Awards</h2>
+      <p class="s-body" style="margin:12px auto 0;text-align:center">Our students shine at every stage — from state championships to national laurels.</p>
+    </div>
+    <div class="ach-grid" id="achGrid">
+      <div class="ach-c sc-in"><div class="ach-med">🥇</div><div class="ach-title">State Karate Gold Medal</div><div class="ach-sub">Sports · State Level</div></div>
+      <div class="ach-c sc-in" style="transition-delay:.06s"><div class="ach-med">🏆</div><div class="ach-title">Maharishi Award — Sr. Secondary</div><div class="ach-sub">Academic Excellence</div></div>
+      <div class="ach-c sc-in" style="transition-delay:.12s"><div class="ach-med">🎨</div><div class="ach-title">Arts &amp; Cultural Competitions</div><div class="ach-sub">MNCC · National</div></div>
+      <div class="ach-c sc-in" style="transition-delay:.18s"><div class="ach-med">📚</div><div class="ach-title">CBSE Board Excellence</div><div class="ach-sub">Class X &amp; XII</div></div>
+      <div class="ach-c sc-in" style="transition-delay:.09s"><div class="ach-med">🧘</div><div class="ach-title">Transcendental Meditation</div><div class="ach-sub">Vedic Science · Holistic</div></div>
+      <div class="ach-c sc-in" style="transition-delay:.15s"><div class="ach-med">🌍</div><div class="ach-title">Global Education Network</div><div class="ach-sub">150 Branches · 14 States</div></div>
+      <div class="ach-c sc-in" style="transition-delay:.21s"><div class="ach-med">⭐</div><div class="ach-title">Silver Jubilee — 25 Years</div><div class="ach-sub">Legacy &amp; Excellence</div></div>
+      <div class="ach-c sc-in" style="transition-delay:.27s"><div class="ach-med">🎵</div><div class="ach-title">Music &amp; Dance Championships</div><div class="ach-sub">Arts &amp; Cultural Awards</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════
+     FACILITIES
+══════════════════════════════ -->
+<section id="facilities">
+  <div class="container">
+    <div class="fac-top f-up">
+      <div class="s-eye">Campus Life</div>
+      <h2 class="s-ttl">World-Class <span class="ital">Facilities</span></h2>
+      <p class="s-body">Every corner of MVM Hyderabad is designed to nurture curiosity, build character, and foster holistic growth in a safe environment.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px">
+        <a class="btn-p" href="#">View Infrastructure</a>
+        <a class="btn-g" href="#admissions">Apply Now</a>
+      </div>
+    </div>
+    <div class="fac-layout">
+      <div class="fac-list">
+        <div class="fac-row f-up">
+          <img class="fac-thumb" src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=200&q=80&fit=crop" alt="Campus" loading="lazy"/>
+          <div class="fac-info"><h4>Pollution-Free Campus</h4><p>Green, eco-conscious 7-acre campus with clean air, lush gardens — a nurturing natural environment for optimal learning.</p></div>
+        </div>
+        <div class="fac-row f-up" style="transition-delay:.07s">
+          <img class="fac-thumb" src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=200&q=80&fit=crop" alt="Computer Lab" loading="lazy"/>
+          <div class="fac-info"><h4>Advanced Computer Lab</h4><p>Modern ICT lab with the latest hardware, networking and software tools for digital-age education.</p></div>
+        </div>
+        <div class="fac-row f-up" style="transition-delay:.14s">
+          <img class="fac-thumb" src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=200&q=80&fit=crop" alt="Sports" loading="lazy"/>
+          <div class="fac-info"><h4>Sports Facilities</h4><p>Comprehensive sports infrastructure for athletics, martial arts, cricket, and team sports. Gold medalists at state level.</p></div>
+        </div>
+        <div class="fac-row f-up" style="transition-delay:.21s">
+          <img class="fac-thumb" src="https://images.unsplash.com/photo-1532094349884-543559015e0b?w=200&q=80&fit=crop" alt="Science Labs" loading="lazy"/>
+          <div class="fac-info"><h4>Science &amp; Language Labs</h4><p>Physics, Chemistry, Biology and Language labs equipped with modern instruments for hands-on learning.</p></div>
+        </div>
+        <div class="fac-row f-up" style="transition-delay:.28s">
+          <img class="fac-thumb" src="https://images.unsplash.com/photo-1588072432836-e10032774350?w=200&q=80&fit=crop" alt="Classroom" loading="lazy"/>
+          <div class="fac-info"><h4>Smart Classrooms</h4><p>Digitally enhanced classrooms with interactive boards and modern audio-visual teaching technology.</p></div>
+        </div>
+        <div class="fac-row f-up" style="transition-delay:.35s">
+          <div class="fac-num">06</div>
+          <div class="fac-info"><h4>Safe Transportation</h4><p>Comprehensive bus routes covering major areas of Hyderabad — safe, reliable student transport every day.</p></div>
+        </div>
+      </div>
+      <div class="fac-gallery">
+        <div class="fac-gal sl-r">
+          <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=85&fit=crop" alt="MVM Campus" loading="lazy"/>
+          <div class="fac-overlay"></div><div class="fac-lbl">Main Campus</div>
+        </div>
+        <div class="fac-gal f-up">
+          <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80&fit=crop" alt="Sports" loading="lazy"/>
+          <div class="fac-overlay"></div><div class="fac-lbl">Sports</div>
+        </div>
+        <div class="fac-gal f-up" style="transition-delay:.1s">
+          <img src="https://mvmhyderabad.org/upload/homeslider/mvmhyd-Silver-Jubilee-2024-22-.jpg" alt="Events" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&q=80'"/>
+          <div class="fac-overlay"></div><div class="fac-lbl">Events</div>
+        </div>
+        <div class="fac-gal f-up" style="transition-delay:.2s">
+          <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&q=80&fit=crop" alt="Cultural" loading="lazy"/>
+          <div class="fac-overlay"></div><div class="fac-lbl">Cultural</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════
+     GALLERY
+══════════════════════════════ -->
+<section id="gallery">
+  <div class="container">
+    <div class="gal-hd f-up">
+      <div class="s-eye" style="justify-content:center">Campus Life</div>
+      <h2 class="s-ttl">Life at <span class="ital">MVM Hyderabad</span></h2>
+    </div>
+    <div class="gal-grid">
+      <div class="gal-item sc-in">
+        <img src="https://mvmhyderabad.org/upload/homeslider/mvmhyd-Silver-Jubilee-2024-22-.jpg" alt="Silver Jubilee" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=900&q=80'"/>
+        <div class="gal-ov"></div><div class="gal-lbl">Silver Jubilee 2024</div>
+      </div>
+      <div class="gal-item sc-in" style="transition-delay:.07s">
+        <img src="https://mvmhyderabad.org/upload/homeslider/JAL-PAKHWADA.jpg" alt="Jal Pakhwada" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=600&q=80'"/>
+        <div class="gal-ov"></div><div class="gal-lbl">Jal Pakhwada</div>
+      </div>
+      <div class="gal-item sc-in" style="transition-delay:.14s">
+        <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&q=80&fit=crop" alt="Campus" loading="lazy"/>
+        <div class="gal-ov"></div><div class="gal-lbl">Our Campus</div>
+      </div>
+      <div class="gal-item sc-in" style="transition-delay:.05s">
+        <img src="https://mvmhyderabad.org/upload/homeslider/mvmhyd-Silver-Jubilee-2024-23.jpg" alt="Celebration" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=900&q=80'"/>
+        <div class="gal-ov"></div><div class="gal-lbl">Cultural Events</div>
+      </div>
+      <div class="gal-item sc-in" style="transition-delay:.13s">
+        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80&fit=crop" alt="Sports" loading="lazy"/>
+        <div class="gal-ov"></div><div class="gal-lbl">Sports Day</div>
+      </div>
+      <div class="gal-item sc-in" style="transition-delay:.21s">
+        <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&q=80&fit=crop" alt="Students" loading="lazy"/>
+        <div class="gal-ov"></div><div class="gal-lbl">Our Students</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════
+     ADMISSIONS
+══════════════════════════════ -->
+<section id="admissions" style="padding:var(--sp) 0">
+  <div class="container">
+    <div class="adm-wrap f-up">
+      <div class="adm-info">
+        <div class="s-eye">Enrol Now</div>
+        <h2>Begin Your Child's<br><span class="ital">Journey Here</span></h2>
+        <p>Admissions open for 2026–27. Seats are limited — secure your child's place at MVM Hyderabad where every student is nurtured to excel in academics, arts, sports and life.</p>
+        <div class="adm-btns">
+          <a class="btn-p" href="mvmadmission.html">Apply Now</a>
+          <a class="btn-g" href="mvmadmission.html">Download Form</a>
+        </div>
+        <div class="adm-rows">
+          <div class="adm-r"><span class="adm-l">Session</span><span class="adm-v">2026 – 2027</span></div>
+          <div class="adm-r"><span class="adm-l">Classes</span><span class="adm-v">LKG to X &amp; XII</span></div>
+          <div class="adm-r"><span class="adm-l">Affiliation</span><span class="adm-v">CBSE · New Delhi</span></div>
+          <div class="adm-r"><span class="adm-l">Medium</span><span class="adm-v">English</span></div>
+          <div class="adm-r"><span class="adm-l">Hours</span><span class="adm-v">Mon–Sat · 8AM–3:30PM</span></div>
+        </div>
+      </div>
+      <div id="contact">
+        <div class="contact-box">
+          <div class="contact-map">
+            <img src="https://images.unsplash.com/photo-1569336415962-a4bd9f69c0ef?w=600&q=80&fit=crop" alt="Hyderabad location" loading="lazy"/>
+          </div>
+          <h4>Contact &amp; Location</h4>
+          <div class="c-item"><span class="c-ic">📞</span><span>+91 95156 30444</span></div>
+          <div class="c-item"><span class="c-ic">📞</span><span>+91 95151 56513</span></div>
+          <div class="c-item"><span class="c-ic">✉️</span><span>mvmhyderabad@mssmail.org</span></div>
+          <div class="c-item"><span class="c-ic">📍</span><span>Girish Park, Kondapur, Near Hi-Tech City, Hyderabad</span></div>
+          <div style="margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.06)">
+            <a class="btn-p" href="#" style="display:block;text-align:center;width:100%">Pay Fee Online</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════
+     FOOTER
+══════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="ft-grid">
+      <div class="ft-brand">
+        <div class="ft-logo-badge">MVM</div>
+        <p>Maharishi Vidya Mandir, Hyderabad — part of the Maharishi Global Education Movement. Shaping leaders since 2000.</p>
+        <div class="socials">
+          <a class="soc" href="#">f</a>
+          <a class="soc" href="#">𝕏</a>
+          <a class="soc" href="#">▶</a>
+          <a class="soc" href="#">◎</a>
+        </div>
+      </div>
+      <div class="ft-col">
+        <h5>Quick Links</h5>
+        <a href="#about">About Us</a>
+        <a href="#principal">Chairman's Desk</a>
+        <a href="#academics">Academics</a>
+        <a href="#news">News &amp; Events</a>
+        <a href="#achievements">Achievements</a>
+        <a href="#facilities">Facilities</a>
+      </div>
+      <div class="ft-col">
+        <h5>Academics</h5>
+        <a href="#">Faculty List</a>
+        <a href="#">Exam Schedules</a>
+        <a href="#">Results</a>
+        <a href="#">Book List</a>
+        <a href="#">Latest Circulars</a>
+        <a href="#">CBSE Disclosure</a>
+      </div>
+      <div class="ft-col">
+        <h5>Contact</h5>
+        <p>+91 95156 30444</p>
+        <p>+91 95151 56513</p>
+        <p>mvmhyderabad@mssmail.org</p>
+        <p>Kondapur, Hyderabad, Telangana</p>
+        <a href="#" style="margin-top:6px;color:rgba(255,255,255,.45)">Bus Routes →</a>
+      </div>
+    </div>
+    <div class="ft-btm">
+      <p>© 2026 Maharishi Vidya Mandir, Hyderabad · All Rights Reserved · CBSE Affiliated</p>
+      <p>Part of Maharishi Global Education Movement · 150 Schools · India</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════
+     AI CHAT WIDGET
+══════════════════════════════ -->
+<button class="ai-fab" id="aiFab" onclick="toggleAI()" aria-label="AI Assistant">
+  🤖
+  <div class="ai-dot"></div>
+</button>
+
+<div class="ai-win" id="aiWin">
+  <div class="ai-hdr">
+    <div class="ai-hdr-ic">🎓</div>
+    <div class="ai-hdr-info">
+      <div class="ai-hdr-n">MVM Assistant</div>
+      <div class="ai-hdr-s" id="aiStatusTxt">Ask me anything about MVM</div>
+    </div>
+    <button class="ai-clear" onclick="clearChat()" title="Clear chat">🗑️</button>
+    <button class="ai-hdr-close" onclick="toggleAI()">✕</button>
+  </div>
+
+  <!-- Setup screen -->
+  <div class="ai-setup" id="aiSetup">
+    <div style="font-size:34px">🤖</div>
+    <h4>MVM AI Assistant</h4>
+    <p>Get instant answers about admissions, academics, events, and more. Powered by Google Gemini — free at <strong>ai.google.dev</strong></p>
+    <input class="ai-inp-key" id="aiKey" type="password" placeholder="Paste your Gemini API key here…"/>
+    <button class="ai-start-btn" onclick="startWithKey()">Connect &amp; Start Chat</button>
+    <button class="ai-demo-btn" onclick="startDemo()">Skip — use demo mode</button>
+    <div class="provider-note">Your key is stored in browser memory only, never sent anywhere except Google's API.</div>
+  </div>
+
+  <!-- Chat area (hidden until started) -->
+  <div class="ai-chat-area" id="aiChatArea" style="display:none">
+    <div class="ai-msgs" id="aiMsgs"></div>
+    <div class="ai-input-row">
+      <textarea class="ai-txt" id="aiTxt" rows="1" placeholder="Ask about admissions, fees, events…" onkeydown="aiKey_(event)" oninput="autoResize(this)"></textarea>
+      <button class="ai-send" id="aiSendBtn" onclick="sendMsg()">➤</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     JAVASCRIPT
+══════════════════════════════ -->
+<script>
+/* ── PROGRESS BAR ── */
+const prog=document.getElementById('prog');
+window.addEventListener('scroll',()=>{
+  const pct=(scrollY/(document.documentElement.scrollHeight-innerHeight))*100;
+  prog.style.width=pct+'%';
+},{passive:true});
+
+/* ── HEADER SCROLL STYLE ── */
+const hdr=document.getElementById('hdr');
+window.addEventListener('scroll',()=>{hdr.classList.toggle('scrolled',scrollY>60)},{passive:true});
+
+/* ── MOBILE NAV ── */
+function toggleMob(){
+  const n=document.getElementById('mobNav'),b=document.getElementById('hbg'),o=document.getElementById('ovl');
+  const op=n.classList.toggle('open');
+  b.classList.toggle('open',op);
+  o.classList.toggle('open',op);
+  document.body.style.overflow=op?'hidden':'';
+}
+function closeMob(){
+  document.getElementById('mobNav').classList.remove('open');
+  document.getElementById('hbg').classList.remove('open');
+  document.getElementById('ovl').classList.remove('open');
+  document.body.style.overflow='';
+}
+function xpnd(id){
+  const el=document.getElementById(id);
+  const was=el.classList.contains('xpnd');
+  document.querySelectorAll('.mob-item.xpnd').forEach(e=>e.classList.remove('xpnd'));
+  if(!was)el.classList.add('xpnd');
+}
+
+/* ── HERO SLIDER ── */
+const slides=[...document.querySelectorAll('.slide')];
+const dotsC=document.getElementById('sdots');
+let si=0;
+slides.forEach((_,i)=>{
+  const d=document.createElement('button');
+  d.className='sdot'+(i===0?' on':'');
+  d.setAttribute('aria-label','Slide '+(i+1));
+  d.onclick=()=>goSl(i);
+  dotsC.appendChild(d);
+});
+function goSl(n){
+  slides[si].classList.remove('on');
+  dotsC.children[si].classList.remove('on');
+  si=n;
+  slides[si].classList.add('on');
+  dotsC.children[si].classList.add('on');
+}
+setInterval(()=>goSl((si+1)%slides.length),4800);
+
+/* ── SCROLL REVEAL ── */
+const revObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');revObs.unobserve(e.target)}});
+},{threshold:0.1});
+document.querySelectorAll('.sl-r,.sl-l,.f-up,.sc-in').forEach(el=>revObs.observe(el));
+
+/* ── SPOTLIGHT on achievements ── */
+const achSec=document.getElementById('achievements');
+const spotEl=document.getElementById('spotEl');
+const achCards=[...document.querySelectorAll('.ach-c')];
+let spotT;
+function runSpot(){
+  let i=0;
+  spotT=setInterval(()=>{
+    achCards.forEach(c=>c.classList.remove('lit'));
+    if(i>=achCards.length)i=0;
+    const c=achCards[i];
+    const cr=c.getBoundingClientRect(),sr=achSec.getBoundingClientRect();
+    spotEl.style.left=(cr.left-sr.left+cr.width/2)+'px';
+    spotEl.style.top=(cr.top-sr.top+cr.height/2)+'px';
+    c.classList.add('lit');i++;
+  },1400);
+}
+new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting)runSpot();
+    else{clearInterval(spotT);achCards.forEach(c=>c.classList.remove('lit'));}
+  });
+},{threshold:.2}).observe(achSec);
+
+/* ── ACTIVE NAV HIGHLIGHT ── */
+const navA=[...document.querySelectorAll('.desk-nav a')];
+window.addEventListener('scroll',()=>{
+  let cur='';
+  document.querySelectorAll('section[id]').forEach(s=>{if(scrollY>=s.offsetTop-90)cur=s.id});
+  navA.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+cur));
+},{passive:true});
+
+/* ══════════════════════════════
+   AI CHAT — Gemini API
+══════════════════════════════ */
+let geminiKey='AQ.Ab8RN6LfCeDGr4kr13Gdc2UI4618oulv0Vw8pNAL84wMwkOelA';
+let demoMode=false;
+window.addEventListener('load', () => beginChat());
+
+const MVM_SYS=`You are MVM Assistant, a friendly and knowledgeable AI for Maharishi Vidya Mandir School, Hyderabad.
+Always answer in a warm, helpful tone. Keep replies concise (3-5 sentences max unless detail is needed).
+
+Key facts:
+- School: Maharishi Vidya Mandir (MVM), Hyderabad
+- Location: Girish Park, Kondapur, Near Hi-Tech City, R.R. District, Hyderabad 500032, Telangana
+- Affiliation: CBSE, New Delhi
+- Classes: LKG to Class XII
+- Established: 2000 | Campus: 7.05 acres
+- Chairman: Brahmachari (Dr.) Girish Chandra Varma, B.Sc., LL.B., B.Mus., Ph.D.
+- Contact: +91 95156 30444 / 95151 56513 | mvmhyderabad@mssmail.org
+- Working hours: Monday–Saturday, 8AM–3:30PM
+- Part of Maharishi Global Education Movement: 150 branches, 14 states, 85,000 students, 6,500 staff
+- Unique features: Transcendental Meditation program, Maharishi Vedic Science, pollution-free campus
+- Achievements: Gold medal State Karate, Maharishi Award (Sr. Secondary), Silver Jubilee 2024
+- Admissions: Open for 2026-27 session, Classes LKG to X & XII
+- For anything unclear, suggest calling the school directly.`;
+
+function toggleAI(){
+  document.getElementById('aiWin').classList.toggle('open');
+}
+function startWithKey(){
+  const k=document.getElementById('aiKey').value.trim();
+  if(k.length<20){alert('Please enter a valid Gemini API key. Get one free at ai.google.dev');return;}
+  geminiKey=k;
+  demoMode=false;
+  document.getElementById('aiStatusTxt').textContent='Gemini 1.5 Flash · Connected';
+  beginChat();
+}
+function startDemo(){
+  demoMode=true;
+  document.getElementById('aiStatusTxt').textContent='Demo mode · Limited responses';
+  beginChat();
+}
+function beginChat(){
+  document.getElementById('aiSetup').style.display='none';
+  const ca=document.getElementById('aiChatArea');
+  ca.style.display='flex';ca.style.flexDirection='column';
+  addMsg('bot','Hello! 👋 I\'m the MVM Hyderabad assistant. Ask me about admissions, academics, fees, facilities, bus routes, or anything about the school!');
+}
+function addMsg(role,text){
+  const box=document.getElementById('aiMsgs');
+  const d=document.createElement('div');
+  d.className='msg '+role;
+  d.textContent=text;
+  box.appendChild(d);
+  box.scrollTop=box.scrollHeight;
+  return d;
+}
+function showTyping(){
+  const box=document.getElementById('aiMsgs');
+  const d=document.createElement('div');
+  d.className='msg bot';d.id='typDot';
+  d.innerHTML='<div class="typing-dots"><span></span><span></span><span></span></div>';
+  box.appendChild(d);box.scrollTop=box.scrollHeight;
+}
+function removeTyping(){const t=document.getElementById('typDot');if(t)t.remove();}
+
+async function sendMsg(){
+  const inp=document.getElementById('aiTxt');
+  const q=inp.value.trim();
+  if(!q)return;
+  inp.value='';inp.style.height='auto';
+  addMsg('usr',q);
+  document.getElementById('aiSendBtn').disabled=true;
+  showTyping();
+  if(demoMode){
+    await new Promise(r=>setTimeout(r,700));
+    removeTyping();
+    addMsg('bot',getDemoReply(q));
+    document.getElementById('aiSendBtn').disabled=false;
+    return;
+  }
+  try{
+    const res=await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`,
+      {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          system_instruction:{parts:[{text:MVM_SYS}]},
+          contents:[{role:'user',parts:[{text:q}]}],
+          generationConfig:{temperature:0.65,maxOutputTokens:350,topP:0.95}
+        })
+      }
+    );
+    const data=await res.json();
+    removeTyping();
+    if(data.candidates?.[0]?.content?.parts?.[0]?.text){
+      addMsg('bot',data.candidates[0].content.parts[0].text.trim());
+    } else if(data.error){
+      addMsg('bot','⚠️ API error: '+data.error.message+'\n\nCheck your key or try demo mode.');
+    } else {
+      addMsg('bot','Sorry, I couldn\'t get a response. Please try again.');
+    }
+  } catch(err){
+    removeTyping();
+    addMsg('bot','⚠️ Connection error. Check your API key and internet connection, or use demo mode.');
+  }
+  document.getElementById('aiSendBtn').disabled=false;
+}
+
+function getDemoReply(q){
+  const l=q.toLowerCase();
+  if(/(admission|apply|enroll|enrol|join|seat)/i.test(l))
+    return 'Admissions are open for 2026–27! We accept Classes LKG to X & XII. Call +91 95156 30444 or email mvmhyderabad@mssmail.org during school hours (Mon–Sat 8AM–3:30PM). 📝';
+  if(/(fee|cost|charge|tuition|pay)/i.test(l))
+    return 'For the detailed fee structure, please contact the school office: 📞 +91 95156 30444 or ✉️ mvmhyderabad@mssmail.org — the office can share the latest fee details directly.';
+  if(/(bus|transport|route|pick.?up|drop)/i.test(l))
+    return 'MVM Hyderabad runs bus routes across major areas of Hyderabad near Hi-Tech City / Kondapur. Contact the office at +91 95156 30444 for your specific area\'s route and timings. 🚌';
+  if(/(chairman|principal|girish|varma|head|director)/i.test(l))
+    return 'Our Chairman is Brahmachari (Dr.) Girish Chandra Varma — B.Sc., LL.B., B.Mus., Ph.D. He is Chancellor of Maharishi Mahesh Yogi Vedic Vishwavidyalaya and a leading figure in education across India. 🎓';
+  if(/(contact|phone|number|address|location|where)/i.test(l))
+    return 'Contact MVM Hyderabad:\n📞 +91 95156 30444 / 95151 56513\n✉️ mvmhyderabad@mssmail.org\n📍 Girish Park, Kondapur, Near Hi-Tech City, Hyderabad 500032, Telangana\n⏰ Mon–Sat, 8AM–3:30PM';
+  if(/(sport|karate|cricket|athlet|game)/i.test(l))
+    return 'MVM Hyderabad students excel in sports! We have state-level Gold medalists in Karate and strong teams in cricket, athletics and more. Sports are an integral part of our holistic education. 🥇';
+  if(/(meditat|yoga|tm|transcend|vedic)/i.test(l))
+    return 'Transcendental Meditation (TM) is uniquely integrated into our daily curriculum — a signature Maharishi programme that develops students\' inner potential, focus and wellbeing. 🧘';
+  if(/(cbse|board|affili|10th|12th|class)/i.test(l))
+    return 'MVM Hyderabad is CBSE affiliated (New Delhi), offering classes from LKG to Class XII with consistently outstanding board results in Class X and XII. 📚';
+  if(/(galery|gallery|photo|image|pic)/i.test(l))
+    return 'You can view our campus photos and event galleries in the Gallery section on this page. We\'ve had wonderful celebrations — especially the Silver Jubilee 2024! 📸';
+  if(/(result|score|mark|topper)/i.test(l))
+    return 'Our students consistently achieve excellent results in CBSE board exams. For specific results, please visit the school office or contact us at +91 95156 30444. 🏆';
+  if(/(about|history|when|establish|found)/i.test(l))
+    return 'MVM Hyderabad was established in 2000, spread across a 7.05-acre campus in Kondapur near Hi-Tech City. We\'re part of the Maharishi Global Education Movement with 150 branches across 14 states. 🏫';
+  return 'Great question! For the most accurate and up-to-date information, I\'d recommend contacting the school directly: 📞 +91 95156 30444 or ✉️ mvmhyderabad@mssmail.org\n\n(Tip: Add your Gemini API key from ai.google.dev for full AI-powered answers!) 🤖';
+}
+
+function clearChat(){
+  document.getElementById('aiMsgs').innerHTML='';
+  if(geminiKey||demoMode)addMsg('bot','Chat cleared! How can I help you today? 😊');
+}
+function aiKey_(e){
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}
+}
+function autoResize(el){
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight,88)+'px';
+}
+
+/* Close AI on outside click */
+document.addEventListener('click',e=>{
+  const win=document.getElementById('aiWin'),fab=document.getElementById('aiFab');
+  if(win.classList.contains('open')&&!win.contains(e.target)&&!fab.contains(e.target)){
+    win.classList.remove('open');
+  }
+});
+</script>
+</body>
